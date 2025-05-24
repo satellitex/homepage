@@ -1,12 +1,14 @@
 {
   "name": "my-v0-project",
   "version": "0.1.0",
+  "packageManager": "pnpm@8",
   "private": true,
   "scripts": {
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "lint": "next lint"
+    "lint": "next lint",
+    "preview": "pnpm exec serve out"
   },
   "dependencies": {
     "@hookform/resolvers": "^3.9.1",

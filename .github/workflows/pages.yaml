@@ -1,29 +1,40 @@
-name: Deploy Next.js site to GitHub Pages
+name: Deploy Next.js (pnpm) to GitHub Pages
 
 on:
   push:
-    branches: [main]          # デプロイを走らせたいブランチ
+    branches: [main]
 
 permissions:
   contents: read
   pages: write
   id-token: write
 
-concurrency:
-  group: 'pages'
-  cancel-in-progress: true
-
 jobs:
   build:
     runs-on: ubuntu-latest
     steps:
+      # ① ソース取得
       - uses: actions/checkout@v4
+
+      # ② pnpm をインストール（バージョン固定推奨）
+      - uses: pnpm/action-setup@v4          # ← pnpm 本体
+        with:
+          version: 8                       # 任意 (package.json の packageManager に合わせても可)
+          run_install: false               # まだ install しない
+
+      # ③ Node + 依存キャッシュ
       - uses: actions/setup-node@v4
         with:
           node-version: 20
-          cache: 'npm'
-      - run: npm ci
-      - run: npm run build           # out/ フォルダーを生成
+          cache: pnpm                      # ← lock があれば自動キャッシュ :contentReference[oaicite:0]{index=0}
+
+      # ④ 依存インストール
+      - run: pnpm install --frozen-lockfile
+
+      # ⑤ ビルド（out/ 生成）
+      - run: pnpm run build
+
+      # ⑥ out/ を Pages 用アーティファクトにアップロード
       - uses: actions/upload-pages-artifact@v3
         with:
           path: ./out
