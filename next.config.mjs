@@ -10,6 +10,9 @@ const nextConfig = {
     unoptimized: true,
   },
   output: 'export',
+  trailingSlash: true,
+  assetPrefix: process.env.NODE_ENV === 'production' ? '/homepage' : '',
+  basePath: process.env.NODE_ENV === 'production' ? '/homepage' : '',
 }
 
 export default nextConfig
