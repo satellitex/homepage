@@ -25,7 +25,7 @@ jobs:
       # ③ Node + 依存キャッシュ
       - uses: actions/setup-node@v4
         with:
-          node-version: 20
+          node-version: 22
           cache: pnpm                      # ← lock があれば自動キャッシュ :contentReference[oaicite:0]{index=0}
 
       # ④ 依存インストール
