@@ -29,3 +29,11 @@ Continue building your app on:
 3. Changes are automatically pushed to this repository
 4. Vercel deploys the latest version from this repository# homepage
 # homepage
+
+## Skill restore for new environments
+
+If `skills-lock.json` exists, restore the same skills from the project root:
+
+```bash
+npx -y skills experimental_install
+```
