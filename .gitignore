@@ -30,3 +30,6 @@ next-env.d.ts
 
 # local AI skill installation artifacts
 .agents/
+
+# Claude Code personal settings
+.claude/settings.local.json
