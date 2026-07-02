@@ -9,6 +9,7 @@
 - 設立: 2021年1月18日（令和3年）
 - 代表者: 代表社員 山下琢巳
 - 連絡先: public.company.sate@gmail.com
+- X (旧Twitter): https://x.com/public_sate （@public_sate、DMでの相談可）
 - 公式サイト: https://satellitex.github.io/homepage/
 
 ## 事業内容
@@ -22,7 +23,7 @@
 
 - 国内大手企業の子会社によるブロックチェーンプロジェクトのコンサルティング（2024-2025）
 - 株式会社Apas Port「RWAプロジェクト」技術顧問（2024、PR TIMES掲載: https://prtimes.jp/main/html/rd/p/000000008.000125767.html）
-- AOTAKE Project 2024 メンター（会津・秋田地域のスタートアップ人材支援: https://aizu-startups-foundation.com/aotake/2024）
+- AOTAKE Project メンター（2024〜現在、会津・秋田地域のスタートアップ人材支援: https://aizu-startups-foundation.com/aotake/2024）
 - TOKI スマートコントラクト受託開発（2023-2024）
 - 国内企業向けWeb3プロジェクトの再興、売上20億円達成（2022-2023、プロジェクトマネージャー）
 - 複数のブロックチェーンスタートアップでのアドバイザー・開発支援
@@ -34,15 +35,18 @@
 - 未踏スーパークリエータ認定（2018-2019、情報処理推進機構）
 - ACM-ICPC World Finals 2016・2017 出場
 - Stake Technologies株式会社 CTO（2019-2021）
-- 技術スキル: Rust, Go, TypeScript, C/C++, Python, React, Docker, ブロックチェーン
+- 技術スキル: Rust, Go, TypeScript, C/C++, Python, React, Docker, ブロックチェーン, Harness Engineering（AIエージェントハーネス開発）, 量子コンピューティング
 
 ## お問い合わせ
 
+- お問い合わせフォーム: https://satellitex.github.io/homepage/contact/
 - 相談・見積もり・技術顧問の依頼: public.company.sate@gmail.com
+- XのDM: https://x.com/public_sate （@public_sate）
 - 初回ヒアリングで課題を伺い、支援範囲・体制・概算費用を提案。NDA締結にも対応。
 
 ## ページ一覧
 
 - [トップページ](https://satellitex.github.io/homepage/): 事業内容・実績・会社概要・代表者紹介・FAQ
+- [お問い合わせ](https://satellitex.github.io/homepage/contact/): 相談フォーム・メール・XのDM窓口
 - [プライバシーポリシー](https://satellitex.github.io/homepage/privacy/)
 - [利用規約](https://satellitex.github.io/homepage/terms/)

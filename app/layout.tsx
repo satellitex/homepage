@@ -100,6 +100,7 @@ const organizationJsonLd = {
   description: company.description,
   foundingDate: company.founded,
   email: company.email,
+  sameAs: [company.xUrl],
   address: {
     "@type": "PostalAddress",
     postalCode: company.postalCode,

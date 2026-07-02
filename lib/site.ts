@@ -6,6 +6,8 @@ export const basePath = process.env.NODE_ENV === "production" ? "/homepage" : ""
 export const company = {
   name: "PUBLIC下線合同会社",
   email: "public.company.sate@gmail.com",
+  xHandle: "@public_sate",
+  xUrl: "https://x.com/public_sate",
   postalCode: "105-0013",
   address: "東京都港区浜松町二丁目2番15号 浜松町ダイヤビル2F",
   founded: "2021-01-18",

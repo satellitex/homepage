@@ -2,11 +2,28 @@ import type { Metadata } from "next"
 import Link from "next/link"
 import { company } from "@/lib/site"
 
+const pageTitle = "利用規約 | PUBLIC下線合同会社"
+const pageDescription =
+  "PUBLIC下線合同会社が提供する各種支援サービスの契約条件・責任範囲・成果物の取扱いに関する一般的な案内です。"
+
 export const metadata: Metadata = {
   title: "利用規約",
-  description: "PUBLIC下線合同会社が提供する各種支援サービスの契約条件・責任範囲・成果物の取扱いに関する一般的な案内です。",
+  description: pageDescription,
   alternates: {
     canonical: "/terms",
+  },
+  openGraph: {
+    title: pageTitle,
+    description: pageDescription,
+    url: "/terms",
+    type: "website",
+    locale: "ja_JP",
+    siteName: company.name,
+  },
+  twitter: {
+    card: "summary",
+    title: pageTitle,
+    description: pageDescription,
   },
 }
 

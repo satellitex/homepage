@@ -14,6 +14,12 @@ export default function sitemap(): MetadataRoute.Sitemap {
       priority: 1,
     },
     {
+      url: `${siteUrl}/contact/`,
+      lastModified,
+      changeFrequency: "yearly",
+      priority: 0.8,
+    },
+    {
       url: `${siteUrl}/it-consulting-blockchain-development/`,
       lastModified,
       changeFrequency: "monthly",

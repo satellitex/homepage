@@ -78,10 +78,10 @@ const works = [
     linkLabel: "PR TIMES 掲載記事",
   },
   {
-    period: "2024",
-    title: "AOTAKE Project 2024",
+    period: "2024 – 現在",
+    title: "AOTAKE Project",
     role: "メンター",
-    detail: "会津・秋田地域のスタートアップ人材支援プロジェクトにメンターとして参画。",
+    detail: "会津・秋田地域のスタートアップ人材支援プロジェクトにメンターとして継続参画。",
     link: "https://aizu-startups-foundation.com/aotake/2024",
     linkLabel: "AOTAKE Project 2024",
   },
@@ -115,7 +115,18 @@ const businessFields = [
   "Webアプリケーション開発",
 ]
 
-const techSkills = ["Rust", "Go", "TypeScript", "C/C++", "Python", "React", "Docker", "Blockchain"]
+const techSkills = [
+  "Rust",
+  "Go",
+  "TypeScript",
+  "C/C++",
+  "Python",
+  "React",
+  "Docker",
+  "Blockchain",
+  "Harness Engineering",
+  "Quantum Computing",
+]
 
 const faqs = [
   {
@@ -136,7 +147,7 @@ const faqs = [
   },
   {
     q: "相談・見積もりの流れを教えてください。",
-    a: `メール（${company.email}）にてお問い合わせください。初回ヒアリングで課題を伺い、支援範囲・体制・概算費用をご提案します。秘密保持契約（NDA）の締結にも対応します。`,
+    a: `お問い合わせフォームまたはメール（${company.email}）、X（${company.xHandle}）のDMからご連絡ください。初回ヒアリングで課題を伺い、支援範囲・体制・概算費用をご提案します。秘密保持契約（NDA）の締結にも対応します。`,
   },
 ]
 
@@ -162,7 +173,15 @@ const personJsonLd = {
     { "@type": "CollegeOrUniversity", name: "会津大学 コンピュータ理工学部" },
   ],
   award: ["未踏スーパークリエータ認定（2018-2019）", "ACM-ICPC World Finals 2016・2017 出場"],
-  knowsAbout: ["ブロックチェーン", "スマートコントラクト", "ITコンサルティング", "決済システム"],
+  knowsAbout: [
+    "ブロックチェーン",
+    "スマートコントラクト",
+    "ITコンサルティング",
+    "決済システム",
+    "Harness Engineering",
+    "量子コンピューティング",
+  ],
+  sameAs: ["https://x.com/public_sate"],
 }
 
 const servicesJsonLd = {
@@ -219,7 +238,7 @@ export default function HomePage() {
           </nav>
 
           <Button asChild className="rounded-none bg-[#0b1f33] px-5 text-sm font-medium text-white hover:bg-[#16324d]">
-            <a href={`mailto:${company.email}`}>お問い合わせ</a>
+            <Link href="/contact">お問い合わせ</Link>
           </Button>
         </div>
       </header>
@@ -254,10 +273,10 @@ export default function HomePage() {
                 size="lg"
                 className="group rounded-none bg-[#0b1f33] px-8 text-base font-medium text-white hover:bg-[#16324d]"
               >
-                <a href={`mailto:${company.email}`}>
+                <Link href="/contact">
                   プロジェクトの相談をする
                   <ArrowRight className="transition-transform group-hover:translate-x-1" />
-                </a>
+                </Link>
               </Button>
               <a href="#services" className="nav-underline text-sm font-medium text-foreground/80">
                 事業内容を見る
@@ -404,6 +423,20 @@ export default function HomePage() {
                   未踏スーパークリエータ。パブリックブロックチェーン企業のCTO、大手企業グループのコンサルティング、
                   Web3事業のプロジェクトマネジメントを経て、戦略と実装を一本の線で結ぶ支援を続けている。
                 </p>
+                <p className="mt-4 text-sm">
+                  <a
+                    href={company.xUrl}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="nav-underline inline-flex items-center gap-1.5 font-medium text-[#0057d9]"
+                  >
+                    <span className="font-mono" aria-hidden="true">
+                      𝕏
+                    </span>
+                    {company.xHandle}
+                    <ArrowUpRight className="h-3.5 w-3.5" />
+                  </a>
+                </p>
                 <div className="mt-8 flex flex-wrap gap-2">
                   {techSkills.map((skill) => (
                     <span key={skill} className="border border-border bg-background px-3 py-1 font-mono text-xs">
@@ -493,16 +526,26 @@ export default function HomePage() {
                 ITプロジェクトのご相談、お見積もり、技術顧問のご依頼など、お気軽にお問い合わせください。
                 秘密保持契約（NDA）の締結にも対応します。
               </p>
-              <div className="mt-10">
+              <div className="mt-10 flex flex-wrap items-center gap-4">
                 <Button
                   asChild
                   size="lg"
                   className="group rounded-none bg-white px-8 text-base font-medium text-[#0b1f33] hover:bg-[#e8f6ff]"
                 >
-                  <a href={`mailto:${company.email}`}>
+                  <Link href="/contact">
                     <Mail className="mr-1 h-4 w-4" />
-                    メールでお問い合わせ
+                    お問い合わせフォームへ
                     <ArrowRight className="transition-transform group-hover:translate-x-1" />
+                  </Link>
+                </Button>
+                <Button
+                  asChild
+                  size="lg"
+                  variant="outline"
+                  className="rounded-none border-white/40 bg-transparent px-8 text-base font-medium text-white hover:bg-white/10 hover:text-white"
+                >
+                  <a href={company.xUrl} target="_blank" rel="noopener noreferrer">
+                    XのDMで相談する
                   </a>
                 </Button>
               </div>
@@ -510,6 +553,19 @@ export default function HomePage() {
                 <p className="flex items-center gap-2">
                   <Mail className="h-4 w-4" aria-hidden="true" />
                   {company.email}
+                </p>
+                <p className="flex items-center gap-2">
+                  <span className="font-mono" aria-hidden="true">
+                    𝕏
+                  </span>
+                  <a
+                    href={company.xUrl}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="nav-underline hover:text-white"
+                  >
+                    {company.xHandle}
+                  </a>
                 </p>
                 <p className="flex items-center gap-2">
                   <MapPin className="h-4 w-4" aria-hidden="true" />
@@ -539,6 +595,9 @@ export default function HomePage() {
                   {item.label}
                 </a>
               ))}
+              <Link href="/contact" className="nav-underline hover:text-foreground">
+                お問い合わせ
+              </Link>
               <Link href="/privacy" className="nav-underline hover:text-foreground">
                 プライバシーポリシー
               </Link>
