@@ -16,10 +16,9 @@ jobs:
       # ① ソース取得
       - uses: actions/checkout@v4
 
-      # ② pnpm をインストール（バージョン固定推奨）
+      # ② pnpm をインストール（package.json の packageManager を参照）
       - uses: pnpm/action-setup@v4          # ← pnpm 本体
         with:
-          version: 8                       # 任意 (package.json の packageManager に合わせても可)
           run_install: false               # まだ install しない
 
       # ③ Node + 依存キャッシュ

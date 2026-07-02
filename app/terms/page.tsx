@@ -1,21 +1,74 @@
+import type { Metadata } from "next"
+import Link from "next/link"
+import { company } from "@/lib/site"
+
+const pageTitle = "利用規約 | PUBLIC下線合同会社"
+const pageDescription =
+  "PUBLIC下線合同会社が提供する各種支援サービスの契約条件・責任範囲・成果物の取扱いに関する一般的な案内です。"
+
+export const metadata: Metadata = {
+  title: "利用規約",
+  description: pageDescription,
+  alternates: {
+    canonical: "/terms",
+  },
+  openGraph: {
+    title: pageTitle,
+    description: pageDescription,
+    url: "/terms",
+    type: "website",
+    locale: "ja_JP",
+    siteName: company.name,
+  },
+  twitter: {
+    card: "summary",
+    title: pageTitle,
+    description: pageDescription,
+  },
+}
+
 export default function TermsPage() {
   return (
-    <main className="mx-auto max-w-3xl px-4 py-16 text-slate-100">
-      <h1 className="font-display text-4xl">利用規約</h1>
-      <p className="mt-6 text-sm leading-relaxed text-slate-300">
-        PUBLIC下線合同会社が提供する各種支援サービスの契約条件、責任範囲、成果物の取扱いは、
-        個別契約書または発注書に定めるものとします。本ページは一般的な案内であり、最終条件は個別契約を優先します。
-      </p>
-      <p className="mt-4 text-sm leading-relaxed text-slate-300">
-        サービス内容や契約条件に関する詳細は、
-        <a href="mailto:public.company.sate@gmail.com" className="text-cyan-300 hover:underline">
-          public.company.sate@gmail.com
-        </a>
-        までお問い合わせください。
-      </p>
-      <a href="/" className="mt-8 inline-block text-cyan-300 hover:underline">
-        トップページへ戻る
-      </a>
-    </main>
+    <div className="min-h-screen">
+      <header className="border-b border-border bg-white">
+        <div className="container mx-auto px-4 py-4">
+          <Link href="/" className="flex items-baseline gap-2" aria-label="PUBLIC下線合同会社 トップページ">
+            <span className="font-display text-xl font-semibold tracking-tight">
+              PUBLIC<span className="name-underline">下線</span>
+            </span>
+            <span className="text-xs text-muted-foreground">合同会社</span>
+          </Link>
+        </div>
+      </header>
+
+      <main className="container mx-auto max-w-3xl px-4 py-16">
+        <p className="font-mono text-xs tracking-[0.35em] text-[#0057d9]">TERMS OF SERVICE</p>
+        <h1 className="mt-4 font-display text-3xl font-semibold sm:text-4xl">
+          <span className="reveal-underline is-revealed">利用規約</span>
+        </h1>
+        <div className="mt-10 space-y-6 text-sm leading-relaxed text-muted-foreground sm:text-base">
+          <p>
+            {company.name}が提供する各種支援サービスの契約条件、責任範囲、成果物の取扱いは、
+            個別契約書または発注書に定めるものとします。本ページは一般的な案内であり、最終条件は個別契約を優先します。
+          </p>
+          <p>
+            サービス内容や契約条件に関する詳細は、
+            <a href={`mailto:${company.email}`} className="nav-underline font-medium text-[#0057d9]">
+              {company.email}
+            </a>
+            までお問い合わせください。
+          </p>
+        </div>
+        <Link href="/" className="nav-underline mt-12 inline-block text-sm font-medium text-[#0057d9]">
+          ← トップページへ戻る
+        </Link>
+      </main>
+
+      <footer className="border-t border-border bg-white py-8">
+        <div className="container mx-auto px-4">
+          <p className="text-xs text-muted-foreground">© {new Date().getFullYear()} {company.name}. All rights reserved.</p>
+        </div>
+      </footer>
+    </div>
   )
 }

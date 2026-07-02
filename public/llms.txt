@@ -1,0 +1,52 @@
+# PUBLIC下線合同会社
+
+> PUBLIC下線合同会社は、ITコンサルティングとブロックチェーン開発を軸に、戦略立案からシステム設計・開発・運用までを一気通貫で支援する東京都港区のテクノロジーファームです。大手企業グループのブロックチェーンプロジェクト支援から、スタートアップの技術顧問まで幅広い実績があります。
+
+## 会社情報
+
+- 商号: PUBLIC下線合同会社
+- 所在地: 〒105-0013 東京都港区浜松町二丁目2番15号 浜松町ダイヤビル2F
+- 設立: 2021年1月18日（令和3年）
+- 代表者: 代表社員 山下琢巳
+- 連絡先: public.company.sate@gmail.com
+- X (旧Twitter): https://x.com/public_sate （@public_sate、DMでの相談可）
+- 公式サイト: https://satellitex.github.io/homepage/
+
+## 事業内容
+
+- ITコンサルティング: 経営課題を実行可能なIT戦略へ落とし込む。企業戦略立案・システム構築支援。
+- ブロックチェーン・Web3開発: スマートコントラクト開発、RWA、決済システム開発。
+- Forward Deployed Engineering: 顧客現場に深く入り込み、AI・ソフトウェアのカスタマイズから実装・運用までを短期間で一気通貫支援。
+- システム設計・開発: ソフトウェア・ハードウェアの企画・開発・設計、Webアプリケーション開発。
+
+## 主要実績
+
+- 国内大手企業の子会社によるブロックチェーンプロジェクトのコンサルティング（2024-2025）
+- 株式会社Apas Port「RWAプロジェクト」技術顧問（2024、PR TIMES掲載: https://prtimes.jp/main/html/rd/p/000000008.000125767.html）
+- AOTAKE Project メンター（2024〜現在、会津・秋田地域のスタートアップ人材支援: https://aizu-startups-foundation.com/aotake/2024）
+- TOKI スマートコントラクト受託開発（2023-2024）
+- 国内企業向けWeb3プロジェクトの再興、売上20億円達成（2022-2023、プロジェクトマネージャー）
+- 複数のブロックチェーンスタートアップでのアドバイザー・開発支援
+
+## 代表者プロフィール（山下琢巳）
+
+- 東京大学大学院 情報理工学系研究科 創造情報学専攻（修士課程）
+- 会津大学 コンピュータ理工学部 コンピュータ理工学科（学士課程）
+- 未踏スーパークリエータ認定（2018-2019、情報処理推進機構）
+- ACM-ICPC World Finals 2016・2017 出場
+- Stake Technologies株式会社 CTO（2019-2021）
+- 技術スキル: Rust, Go, TypeScript, C/C++, Python, React, Docker, ブロックチェーン, Harness Engineering（AIエージェントハーネス開発）, 量子コンピューティング
+
+## お問い合わせ
+
+- お問い合わせフォーム: https://satellitex.github.io/homepage/contact/
+- 相談・見積もり・技術顧問の依頼: public.company.sate@gmail.com
+- XのDM: https://x.com/public_sate （@public_sate）
+- 初回ヒアリングで課題を伺い、支援範囲・体制・概算費用を提案。NDA締結にも対応。
+
+## ページ一覧
+
+- [トップページ](https://satellitex.github.io/homepage/): 事業内容・実績・会社概要・代表者紹介・FAQ
+- [お問い合わせ](https://satellitex.github.io/homepage/contact/): 相談フォーム・メール・XのDM窓口
+- [プライバシーポリシー](https://satellitex.github.io/homepage/privacy/)
+- [利用規約](https://satellitex.github.io/homepage/terms/)
