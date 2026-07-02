@@ -3,22 +3,15 @@
 import { useEffect, useRef, useState, type FormEvent } from "react"
 import Link from "next/link"
 import { Button } from "@/components/ui/button"
+import { inquiryTypes } from "@/lib/content"
 import { company } from "@/lib/site"
 import { ArrowUpRight, Check, Copy, Mail, Send } from "lucide-react"
-
-const inquiryTypes = [
-  "ITコンサルティング",
-  "ブロックチェーン・Web3開発",
-  "Forward Deployed Engineering",
-  "技術顧問・アドバイザリー",
-  "その他",
-]
 
 // サインアップ不要のフォーム送信サービス。宛先アドレス側で初回のみ有効化が必要
 const formEndpoint = `https://formsubmit.co/ajax/${company.email}`
 
 const inputClass =
-  "w-full border border-border bg-white px-4 py-3 text-sm outline-none transition-colors focus:border-[#0057d9] focus:ring-1 focus:ring-[#0057d9] disabled:opacity-60"
+  "w-full border border-border bg-white px-4 py-3 text-sm outline-none transition-colors focus:border-line-blue focus:ring-1 focus:ring-line-blue disabled:opacity-60"
 
 type SendStatus = "idle" | "sending" | "sent" | "error"
 
@@ -135,7 +128,7 @@ export function ContactForm() {
           <div className="grid gap-6 sm:grid-cols-2">
             <label className="block">
               <span className="mb-2 block text-sm font-medium">
-                お名前 <span className="text-[#0057d9]">*</span>
+                お名前 <span className="text-line-blue">*</span>
               </span>
               <input
                 type="text"
@@ -178,7 +171,7 @@ export function ContactForm() {
           </label>
           <label className="block">
             <span className="mb-2 block text-sm font-medium">
-              ご相談内容の種別 <span className="text-[#0057d9]">*</span>
+              ご相談内容の種別 <span className="text-line-blue">*</span>
             </span>
             <select
               name="inquiry-type"
@@ -196,7 +189,7 @@ export function ContactForm() {
           </label>
           <label className="block">
             <span className="mb-2 block text-sm font-medium">
-              ご相談内容 <span className="text-[#0057d9]">*</span>
+              ご相談内容 <span className="text-line-blue">*</span>
             </span>
             <textarea
               name="message"
@@ -224,15 +217,15 @@ export function ContactForm() {
             type="submit"
             size="lg"
             disabled={status === "sending"}
-            className="rounded-none bg-[#0b1f33] px-8 text-base font-medium text-white hover:bg-[#16324d]"
+            className="rounded-none bg-ink px-8 text-base font-medium text-white hover:bg-ink-soft"
           >
             <Send className="mr-1 h-4 w-4" />
             {status === "sending" ? "送信中…" : "送信する"}
           </Button>
           {status === "error" ? (
-            <div className="border border-[#c2410c]/30 bg-[#fff7ed] p-4 text-sm leading-relaxed" role="alert">
+            <div className="border border-orange-700/30 bg-orange-50 p-4 text-sm leading-relaxed" role="alert">
               送信に失敗しました。お手数ですが、
-              <a href={mailtoHref()} className="nav-underline font-medium text-[#0057d9]">
+              <a href={mailtoHref()} className="nav-underline font-medium text-line-blue">
                 メールソフトで送信
               </a>
               いただくか、右のメールアドレス宛に直接お送りください。
@@ -240,7 +233,7 @@ export function ContactForm() {
           ) : (
             <p className="text-xs leading-relaxed text-muted-foreground">
               入力内容はこのページからそのまま当社宛メールとして送信されます。送信内容の取扱いは
-              <Link href="/privacy" className="nav-underline text-[#0057d9]">
+              <Link href="/privacy" className="nav-underline text-line-blue">
                 プライバシーポリシー
               </Link>
               をご覧ください。
@@ -251,12 +244,12 @@ export function ContactForm() {
 
       <aside className="space-y-8 border-t border-border pt-8 lg:border-l lg:border-t-0 lg:pl-10 lg:pt-0">
         <div>
-          <h2 className="border-b-2 border-[#0b1f33] pb-2 text-sm font-semibold tracking-wide">メールで直接送る</h2>
+          <h2 className="border-b-2 border-ink pb-2 text-sm font-semibold tracking-wide">メールで直接送る</h2>
           <p className="mt-4 break-all font-mono text-sm">{company.email}</p>
           <button
             type="button"
             onClick={copyEmail}
-            className="nav-underline mt-3 inline-flex items-center gap-1.5 text-sm font-medium text-[#0057d9]"
+            className="nav-underline mt-3 inline-flex items-center gap-1.5 text-sm font-medium text-line-blue"
           >
             {copied ? <Check className="h-3.5 w-3.5" /> : <Copy className="h-3.5 w-3.5" />}
             {copied ? "コピーしました" : "アドレスをコピー"}
@@ -264,7 +257,7 @@ export function ContactForm() {
           <p className="mt-3">
             <a
               href={`mailto:${company.email}`}
-              className="nav-underline inline-flex items-center gap-1.5 text-sm font-medium text-[#0057d9]"
+              className="nav-underline inline-flex items-center gap-1.5 text-sm font-medium text-line-blue"
             >
               <Mail className="h-3.5 w-3.5" />
               メールソフトで書く
@@ -272,7 +265,7 @@ export function ContactForm() {
           </p>
         </div>
         <div>
-          <h2 className="border-b-2 border-[#0b1f33] pb-2 text-sm font-semibold tracking-wide">XのDMで相談する</h2>
+          <h2 className="border-b-2 border-ink pb-2 text-sm font-semibold tracking-wide">XのDMで相談する</h2>
           <p className="mt-4 text-sm leading-relaxed text-muted-foreground">
             カジュアルなご相談・ご質問はXのDMでも受け付けています。
           </p>
@@ -280,7 +273,7 @@ export function ContactForm() {
             href={company.xUrl}
             target="_blank"
             rel="noopener noreferrer"
-            className="nav-underline mt-3 inline-flex items-center gap-1.5 text-sm font-medium text-[#0057d9]"
+            className="nav-underline mt-3 inline-flex items-center gap-1.5 text-sm font-medium text-line-blue"
           >
             <span className="font-mono" aria-hidden="true">
               𝕏
@@ -290,7 +283,7 @@ export function ContactForm() {
           </a>
         </div>
         <div>
-          <h2 className="border-b-2 border-[#0b1f33] pb-2 text-sm font-semibold tracking-wide">ご相談にあたって</h2>
+          <h2 className="border-b-2 border-ink pb-2 text-sm font-semibold tracking-wide">ご相談にあたって</h2>
           <ul className="mt-4 space-y-3 text-sm leading-relaxed text-muted-foreground">
             <li>初回ヒアリングは無料です。</li>
             <li>秘密保持契約（NDA）の締結に対応します。</li>

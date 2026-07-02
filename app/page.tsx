@@ -1,206 +1,26 @@
 import Link from "next/link"
 import { Button } from "@/components/ui/button"
+import { JsonLd } from "@/components/json-ld"
 import { Reveal } from "@/components/reveal"
-import { company, siteUrl } from "@/lib/site"
+import { SiteLogo } from "@/components/site-header"
+import {
+  businessFields,
+  faqs,
+  heroStats,
+  navItems,
+  services,
+  strengths,
+  techSkills,
+  works,
+} from "@/lib/content"
+import { company } from "@/lib/site"
+import { faqJsonLd, personJsonLd, servicesJsonLd } from "@/lib/structured-data"
 import { ArrowRight, ArrowUpRight, Mail, MapPin, Plus } from "lucide-react"
-
-const navItems = [
-  { href: "#services", label: "事業内容" },
-  { href: "#strengths", label: "選ばれる理由" },
-  { href: "#works", label: "実績" },
-  { href: "#about", label: "会社概要" },
-  { href: "#profile", label: "代表者紹介" },
-  { href: "#faq", label: "FAQ" },
-]
-
-const heroStats = [
-  { value: "2021", label: "設立 / 東京・浜松町" },
-  { value: "未踏", label: "スーパークリエータ認定（IPA）" },
-  { value: "ICPC", label: "World Finals 2016・2017 出場" },
-  { value: "20億円", label: "再興したWeb3事業の売上規模" },
-]
-
-const services = [
-  {
-    no: "01",
-    title: "ITコンサルティング",
-    en: "IT CONSULTING",
-    body: "経営課題を技術の言葉に翻訳し、実行可能なIT戦略へ落とし込みます。企業戦略立案・システム構築支援まで、意思決定の初手から伴走します。",
-  },
-  {
-    no: "02",
-    title: "ブロックチェーン・Web3開発",
-    en: "BLOCKCHAIN / WEB3",
-    body: "スマートコントラクト開発、RWA、決済システムまで。パブリックチェーンのCTO経験に裏打ちされた、事業に耐えるWeb3実装を提供します。",
-  },
-  {
-    no: "03",
-    title: "Forward Deployed Engineering",
-    en: "FORWARD DEPLOYED ENGINEERING",
-    body: "顧客の現場に深く入り込み、AI・ソフトウェアのカスタマイズから実装・運用までを短期間で一気通貫支援。要件定義書を待たず、現場で動くものを届けます。",
-  },
-  {
-    no: "04",
-    title: "システム設計・開発",
-    en: "SYSTEM DESIGN & DEVELOPMENT",
-    body: "ソフトウェア・ハードウェアの企画・開発・設計、Webアプリケーション開発。堅牢で拡張性の高いアーキテクチャを、保守・運用まで見据えて構築します。",
-  },
-]
-
-const strengths = [
-  {
-    title: "大企業の基準を知る実行力",
-    body: "国内大手企業の子会社ブロックチェーンプロジェクトのコンサルティング、売上20億円規模のWeb3事業再興など、企業水準の品質・統制が求められる現場での実績があります。",
-  },
-  {
-    title: "経営と技術、両方の言語",
-    body: "パブリックブロックチェーン企業のCTO、プロジェクトマネージャー、技術顧問。戦略の意思決定からコードレビューまで、階層を跨いで同じ精度で対話できます。",
-  },
-  {
-    title: "構想から運用までの一本線",
-    body: "コンサルティング会社と開発会社に分断されがちな工程を、一つのチームで貫きます。戦略・設計・実装・運用の間で情報が失われません。",
-  },
-]
-
-const works = [
-  {
-    period: "2024 – 2025",
-    title: "大手企業グループ ブロックチェーンプロジェクト",
-    role: "コンサルティング",
-    detail: "国内大手企業の子会社によるブロックチェーンプロジェクトのコンサルティングを担当。",
-  },
-  {
-    period: "2024",
-    title: "株式会社Apas Port「RWAプロジェクト」",
-    role: "技術顧問",
-    detail: "現実世界の事業をオンチェーンに拡張するRWAプロジェクトの技術顧問に就任。",
-    link: "https://prtimes.jp/main/html/rd/p/000000008.000125767.html",
-    linkLabel: "PR TIMES 掲載記事",
-  },
-  {
-    period: "2024 – 現在",
-    title: "AOTAKE Project",
-    role: "メンター",
-    detail: "会津・秋田地域のスタートアップ人材支援プロジェクトにメンターとして継続参画。",
-    link: "https://aizu-startups-foundation.com/aotake/2024",
-    linkLabel: "AOTAKE Project 2024",
-  },
-  {
-    period: "2023 – 2024",
-    title: "TOKI スマートコントラクト開発",
-    role: "ソフトウェアエンジニア",
-    detail: "クロスチェーン領域におけるスマートコントラクトの受託ソフトウェア開発。",
-  },
-  {
-    period: "2022 – 2023",
-    title: "国内企業向けWeb3プロジェクトの再興",
-    role: "プロジェクトマネージャー",
-    detail: "停滞していたWeb3プロジェクトを立て直し、売上20億円を達成。",
-  },
-  {
-    period: "2019 – 2021",
-    title: "Stake Technologies株式会社",
-    role: "CTO",
-    detail: "パブリックブロックチェーン開発企業の最高技術責任者として開発を牽引。",
-  },
-]
-
-const businessFields = [
-  "ソフトウェア・ハードウェアの企画・開発・設計",
-  "ITコンサルティング業務",
-  "Forward Deployed Engineering",
-  "企業戦略立案・システム構築支援",
-  "ブロックチェーン技術開発",
-  "決済システム開発",
-  "Webアプリケーション開発",
-]
-
-const techSkills = [
-  "Rust",
-  "Go",
-  "TypeScript",
-  "C/C++",
-  "Python",
-  "React",
-  "Docker",
-  "Blockchain",
-  "Harness Engineering",
-  "Quantum Computing",
-]
-
-const faqs = [
-  {
-    q: "どのような業務を依頼できますか？",
-    a: "ITコンサルティング、ブロックチェーン・Web3開発、スマートコントラクト開発、決済システム開発、Forward Deployed Engineering（現場常駐型のAI・ソフトウェア実装支援）などをご依頼いただけます。戦略立案のみ、開発のみといった部分的なご依頼も可能です。",
-  },
-  {
-    q: "大企業のプロジェクトにも対応できますか？",
-    a: "対応できます。国内大手企業の子会社によるブロックチェーンプロジェクトのコンサルティングや、売上20億円規模のWeb3プロジェクト再興など、企業水準の品質管理・統制が求められるプロジェクトの実績があります。",
-  },
-  {
-    q: "技術顧問やアドバイザリーだけの契約も可能ですか？",
-    a: "可能です。株式会社Apas PortのRWAプロジェクト技術顧問をはじめ、複数のブロックチェーンスタートアップでアドバイザー・開発支援の実績があります。週数時間からの顧問契約もご相談ください。",
-  },
-  {
-    q: "対応できる技術領域を教えてください。",
-    a: "Rust・Go・TypeScript・C/C++・Pythonによるシステム開発、Reactを用いたWebアプリケーション開発、Docker等のインフラ構築、スマートコントラクトを含むブロックチェーン開発に対応しています。",
-  },
-  {
-    q: "相談・見積もりの流れを教えてください。",
-    a: `お問い合わせフォームまたはメール（${company.email}）、X（${company.xHandle}）のDMからご連絡ください。初回ヒアリングで課題を伺い、支援範囲・体制・概算費用をご提案します。秘密保持契約（NDA）の締結にも対応します。`,
-  },
-]
-
-const faqJsonLd = {
-  "@context": "https://schema.org",
-  "@type": "FAQPage",
-  mainEntity: faqs.map((faq) => ({
-    "@type": "Question",
-    name: faq.q,
-    acceptedAnswer: { "@type": "Answer", text: faq.a },
-  })),
-}
-
-const personJsonLd = {
-  "@context": "https://schema.org",
-  "@type": "Person",
-  "@id": `${siteUrl}/#representative`,
-  name: company.representative,
-  jobTitle: "代表社員",
-  worksFor: { "@id": `${siteUrl}/#organization` },
-  alumniOf: [
-    { "@type": "CollegeOrUniversity", name: "東京大学大学院 情報理工学系研究科" },
-    { "@type": "CollegeOrUniversity", name: "会津大学 コンピュータ理工学部" },
-  ],
-  award: ["未踏スーパークリエータ認定（2018-2019）", "ACM-ICPC World Finals 2016・2017 出場"],
-  knowsAbout: [
-    "ブロックチェーン",
-    "スマートコントラクト",
-    "ITコンサルティング",
-    "決済システム",
-    "Harness Engineering",
-    "量子コンピューティング",
-  ],
-  sameAs: ["https://x.com/public_sate"],
-}
-
-const servicesJsonLd = {
-  "@context": "https://schema.org",
-  "@type": "ItemList",
-  itemListElement: services.map((service, index) => ({
-    "@type": "Service",
-    position: index + 1,
-    name: service.title,
-    description: service.body,
-    provider: { "@id": `${siteUrl}/#organization` },
-    areaServed: "JP",
-  })),
-}
 
 function SectionHeading({ no, en, title }: { no: string; en: string; title: string }) {
   return (
     <Reveal className="mb-12">
-      <p className="font-mono text-xs tracking-[0.35em] text-[#0057d9]">
+      <p className="font-mono text-xs tracking-[0.35em] text-line-blue">
         {no} <span aria-hidden="true">─</span> {en}
       </p>
       <h2 className="mt-4 font-display text-3xl font-semibold sm:text-4xl">
@@ -222,12 +42,7 @@ export default function HomePage() {
 
       <header className="sticky top-0 z-50 border-b border-border bg-white/90 backdrop-blur-md">
         <div className="container mx-auto flex items-center justify-between px-4 py-4">
-          <Link href="/" className="flex items-baseline gap-2" aria-label="PUBLIC下線合同会社 トップページ">
-            <span className="font-display text-xl font-semibold tracking-tight">
-              PUBLIC<span className="name-underline">下線</span>
-            </span>
-            <span className="text-xs text-muted-foreground">合同会社</span>
-          </Link>
+          <SiteLogo />
 
           <nav className="hidden items-center gap-7 text-sm lg:flex" aria-label="メインナビゲーション">
             {navItems.map((item) => (
@@ -237,7 +52,7 @@ export default function HomePage() {
             ))}
           </nav>
 
-          <Button asChild className="rounded-none bg-[#0b1f33] px-5 text-sm font-medium text-white hover:bg-[#16324d]">
+          <Button asChild className="rounded-none bg-ink px-5 text-sm font-medium text-white hover:bg-ink-soft">
             <Link href="/contact">お問い合わせ</Link>
           </Button>
         </div>
@@ -254,7 +69,7 @@ export default function HomePage() {
             構想から実装まで、一気通貫。
           </p>
           <div className="container relative mx-auto px-4 pb-20 pt-24 sm:pb-28 sm:pt-32">
-            <p className="animate-rise font-mono text-xs tracking-[0.35em] text-[#0057d9]">
+            <p className="animate-rise font-mono text-xs tracking-[0.35em] text-line-blue">
               IT CONSULTING &amp; BLOCKCHAIN DEVELOPMENT
             </p>
             <h1 className="animate-rise mt-8 font-display text-4xl font-semibold leading-[1.35] sm:text-6xl lg:text-7xl">
@@ -271,7 +86,7 @@ export default function HomePage() {
               <Button
                 asChild
                 size="lg"
-                className="group rounded-none bg-[#0b1f33] px-8 text-base font-medium text-white hover:bg-[#16324d]"
+                className="group rounded-none bg-ink px-8 text-base font-medium text-white hover:bg-ink-soft"
               >
                 <Link href="/contact">
                   プロジェクトの相談をする
@@ -353,7 +168,7 @@ export default function HomePage() {
                           href={work.link}
                           target="_blank"
                           rel="noopener noreferrer"
-                          className="nav-underline mt-3 inline-flex items-center gap-1 text-sm font-medium text-[#0057d9]"
+                          className="nav-underline mt-3 inline-flex items-center gap-1 text-sm font-medium text-line-blue"
                         >
                           {work.linkLabel}
                           <ArrowUpRight className="h-3.5 w-3.5" />
@@ -397,7 +212,7 @@ export default function HomePage() {
                     <ul className="grid gap-2 text-sm sm:grid-cols-2 sm:text-base">
                       {businessFields.map((field) => (
                         <li key={field} className="flex gap-2">
-                          <span className="mt-[0.7em] h-[2px] w-4 shrink-0 bg-[#00b5ff]" aria-hidden="true" />
+                          <span className="mt-[0.7em] h-[2px] w-4 shrink-0 bg-line-azure" aria-hidden="true" />
                           {field}
                         </li>
                       ))}
@@ -428,7 +243,7 @@ export default function HomePage() {
                     href={company.xUrl}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="nav-underline inline-flex items-center gap-1.5 font-medium text-[#0057d9]"
+                    className="nav-underline inline-flex items-center gap-1.5 font-medium text-line-blue"
                   >
                     <span className="font-mono" aria-hidden="true">
                       𝕏
@@ -448,35 +263,35 @@ export default function HomePage() {
 
               <Reveal className="grid gap-10 sm:grid-cols-2">
                 <div>
-                  <h4 className="border-b-2 border-[#0b1f33] pb-2 text-sm font-semibold tracking-wide">学歴</h4>
+                  <h4 className="border-b-2 border-ink pb-2 text-sm font-semibold tracking-wide">学歴</h4>
                   <ul className="mt-4 space-y-3 text-sm leading-relaxed text-muted-foreground">
                     <li>東京大学大学院 情報理工学系研究科 創造情報学専攻（修士課程）</li>
                     <li>会津大学 コンピュータ理工学部 コンピュータ理工学科（学士課程）</li>
                   </ul>
                 </div>
                 <div>
-                  <h4 className="border-b-2 border-[#0b1f33] pb-2 text-sm font-semibold tracking-wide">主要受賞歴</h4>
+                  <h4 className="border-b-2 border-ink pb-2 text-sm font-semibold tracking-wide">主要受賞歴</h4>
                   <ul className="mt-4 space-y-3 text-sm leading-relaxed text-muted-foreground">
                     <li>未踏スーパークリエータ認定（2018-2019）</li>
                     <li>ACM-ICPC World Finals 2016・2017 出場</li>
                   </ul>
                 </div>
                 <div>
-                  <h4 className="border-b-2 border-[#0b1f33] pb-2 text-sm font-semibold tracking-wide">経歴ハイライト</h4>
+                  <h4 className="border-b-2 border-ink pb-2 text-sm font-semibold tracking-wide">経歴ハイライト</h4>
                   <ul className="mt-4 space-y-3 text-sm leading-relaxed text-muted-foreground">
                     <li>Stake Technologies株式会社 CTO（2019-2021）</li>
                     <li>複数のブロックチェーンスタートアップでアドバイザー・開発支援</li>
                   </ul>
                 </div>
                 <div>
-                  <h4 className="border-b-2 border-[#0b1f33] pb-2 text-sm font-semibold tracking-wide">事業運営</h4>
+                  <h4 className="border-b-2 border-ink pb-2 text-sm font-semibold tracking-wide">事業運営</h4>
                   <ul className="mt-4 space-y-3 text-sm leading-relaxed text-muted-foreground">
                     <li>
                       <a
                         href="https://allinn.my.canva.site/"
                         target="_blank"
                         rel="noopener noreferrer"
-                        className="nav-underline inline-flex items-center gap-1 font-medium text-[#0057d9]"
+                        className="nav-underline inline-flex items-center gap-1 font-medium text-line-blue"
                       >
                         宿泊施設の運営
                         <ArrowUpRight className="h-3.5 w-3.5" />
@@ -499,7 +314,7 @@ export default function HomePage() {
                   <summary className="flex cursor-pointer list-none items-center justify-between gap-4 py-6 text-sm font-medium sm:text-base [&::-webkit-details-marker]:hidden">
                     {faq.q}
                     <Plus
-                      className="h-4 w-4 shrink-0 text-[#0057d9] transition-transform duration-300 group-open:rotate-45"
+                      className="h-4 w-4 shrink-0 text-line-blue transition-transform duration-300 group-open:rotate-45"
                       aria-hidden="true"
                     />
                   </summary>
@@ -511,10 +326,10 @@ export default function HomePage() {
         </section>
 
         {/* お問い合わせ */}
-        <section id="contact" className="border-t border-border bg-[#0b1f33] text-white">
+        <section id="contact" className="border-t border-border bg-ink text-white">
           <div className="container mx-auto px-4 py-24">
             <div className="max-w-3xl">
-              <p className="font-mono text-xs tracking-[0.35em] text-[#00b5ff]">
+              <p className="font-mono text-xs tracking-[0.35em] text-line-azure">
                 07 <span aria-hidden="true">─</span> CONTACT
               </p>
               <h2 className="mt-4 font-display text-3xl font-semibold leading-snug sm:text-5xl">
@@ -530,7 +345,7 @@ export default function HomePage() {
                 <Button
                   asChild
                   size="lg"
-                  className="group rounded-none bg-white px-8 text-base font-medium text-[#0b1f33] hover:bg-[#e8f6ff]"
+                  className="group rounded-none bg-white px-8 text-base font-medium text-ink hover:bg-[#e8f6ff]"
                 >
                   <Link href="/contact">
                     <Mail className="mr-1 h-4 w-4" />
@@ -612,9 +427,9 @@ export default function HomePage() {
         </div>
       </footer>
 
-      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(personJsonLd) }} />
-      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(faqJsonLd) }} />
-      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(servicesJsonLd) }} />
+      <JsonLd data={personJsonLd} />
+      <JsonLd data={faqJsonLd} />
+      <JsonLd data={servicesJsonLd} />
     </div>
   )
 }
