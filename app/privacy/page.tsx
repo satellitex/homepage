@@ -52,6 +52,10 @@ export default function PrivacyPage() {
             業務連絡および支援提案の目的で利用します。法令に基づく場合を除き、本人の同意なく第三者へ提供しません。
           </p>
           <p>
+            お問い合わせフォームの送信には外部サービス（FormSubmit）を利用しており、
+            入力内容は同サービスを経由して当社宛のメールとして届きます。
+          </p>
+          <p>
             個人情報の開示・訂正・削除のご相談は、
             <a href={`mailto:${company.email}`} className="nav-underline font-medium text-[#0057d9]">
               {company.email}
