@@ -1,21 +1,57 @@
+import type { Metadata } from "next"
+import Link from "next/link"
+import { company } from "@/lib/site"
+
+export const metadata: Metadata = {
+  title: "プライバシーポリシー",
+  description: "PUBLIC下線合同会社のプライバシーポリシー。お問い合わせ時に取得した個人情報の利用目的と取扱いについて説明します。",
+  alternates: {
+    canonical: "/privacy",
+  },
+}
+
 export default function PrivacyPage() {
   return (
-    <main className="mx-auto max-w-3xl px-4 py-16 text-slate-100">
-      <h1 className="font-display text-4xl">プライバシーポリシー</h1>
-      <p className="mt-6 text-sm leading-relaxed text-slate-300">
-        PUBLIC下線合同会社は、お問い合わせ時に取得した氏名・連絡先・ご相談内容を、
-        業務連絡および支援提案の目的で利用します。法令に基づく場合を除き、本人の同意なく第三者へ提供しません。
-      </p>
-      <p className="mt-4 text-sm leading-relaxed text-slate-300">
-        個人情報の開示・訂正・削除のご相談は、
-        <a href="mailto:public.company.sate@gmail.com" className="text-cyan-300 hover:underline">
-          public.company.sate@gmail.com
-        </a>
-        までご連絡ください。
-      </p>
-      <a href="/" className="mt-8 inline-block text-cyan-300 hover:underline">
-        トップページへ戻る
-      </a>
-    </main>
+    <div className="min-h-screen">
+      <header className="border-b border-border bg-white">
+        <div className="container mx-auto px-4 py-4">
+          <Link href="/" className="flex items-baseline gap-2" aria-label="PUBLIC下線合同会社 トップページ">
+            <span className="font-display text-xl font-semibold tracking-tight">
+              PUBLIC<span className="name-underline">下線</span>
+            </span>
+            <span className="text-xs text-muted-foreground">合同会社</span>
+          </Link>
+        </div>
+      </header>
+
+      <main className="container mx-auto max-w-3xl px-4 py-16">
+        <p className="font-mono text-xs tracking-[0.35em] text-[#0057d9]">PRIVACY POLICY</p>
+        <h1 className="mt-4 font-display text-3xl font-semibold sm:text-4xl">
+          <span className="reveal-underline is-revealed">プライバシーポリシー</span>
+        </h1>
+        <div className="mt-10 space-y-6 text-sm leading-relaxed text-muted-foreground sm:text-base">
+          <p>
+            {company.name}は、お問い合わせ時に取得した氏名・連絡先・ご相談内容を、
+            業務連絡および支援提案の目的で利用します。法令に基づく場合を除き、本人の同意なく第三者へ提供しません。
+          </p>
+          <p>
+            個人情報の開示・訂正・削除のご相談は、
+            <a href={`mailto:${company.email}`} className="nav-underline font-medium text-[#0057d9]">
+              {company.email}
+            </a>
+            までご連絡ください。
+          </p>
+        </div>
+        <Link href="/" className="nav-underline mt-12 inline-block text-sm font-medium text-[#0057d9]">
+          ← トップページへ戻る
+        </Link>
+      </main>
+
+      <footer className="border-t border-border bg-white py-8">
+        <div className="container mx-auto px-4">
+          <p className="text-xs text-muted-foreground">© {new Date().getFullYear()} {company.name}. All rights reserved.</p>
+        </div>
+      </footer>
+    </div>
   )
 }
