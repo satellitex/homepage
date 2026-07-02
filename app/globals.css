@@ -32,24 +32,11 @@
     --border: 216 22% 87%;
     --input: 216 22% 87%;
     --ring: 217 90% 42%;
-    --chart-1: 217 90% 42%;
-    --chart-2: 199 100% 50%;
-    --chart-3: 214 55% 12%;
-    --chart-4: 47 95% 50%;
-    --chart-5: 346 87% 50%;
     --radius: 0.25rem;
-    --sidebar-background: 0 0% 100%;
-    --sidebar-foreground: 214 55% 12%;
-    --sidebar-primary: 214 55% 12%;
-    --sidebar-primary-foreground: 45 25% 98%;
-    --sidebar-accent: 214 25% 94%;
-    --sidebar-accent-foreground: 214 55% 12%;
-    --sidebar-border: 216 22% 87%;
-    --sidebar-ring: 217 90% 42%;
 
-    /* 下線モチーフ用 */
+    /* 下線モチーフ用ブランドカラー(tailwind.config.ts から ink / line として参照) */
     --ink: #0b1f33;
-    --paper: #fafaf7;
+    --ink-soft: #16324d;
     --line-azure: #00b5ff;
     --line-blue: #0057d9;
     --rule: rgba(11, 31, 51, 0.08);

@@ -1,34 +1,62 @@
-# Mobile first token app
+# PUBLIC下線合同会社 コーポレートサイト
 
-*Automatically synced with your [v0.dev](https://v0.dev) deployments*
+[PUBLIC下線合同会社](https://satellitex.github.io/homepage/) の公式サイトです。ITコンサルティング・ブロックチェーン開発の事業内容、実績、会社概要、お問い合わせ窓口を掲載しています。
 
-[![Deployed on Vercel](https://img.shields.io/badge/Deployed%20on-Vercel-black?style=for-the-badge&logo=vercel)](https://vercel.com/satellitexs-projects/v0-mobile-first-token-app)
-[![Built with v0](https://img.shields.io/badge/Built%20with-v0.dev-black?style=for-the-badge)](https://v0.dev/chat/projects/jtJI3jyVrFN)
+- 公開URL: https://satellitex.github.io/homepage/
 
-## Overview
+## 技術スタック
 
-This repository will stay in sync with your deployed chats on [v0.dev](https://v0.dev).
-Any changes you make to your deployed app will be automatically pushed to this repository from [v0.dev](https://v0.dev).
+- [Next.js 15](https://nextjs.org/) (App Router) + React 19 + TypeScript — `output: "export"` による静的サイト
+- [Tailwind CSS 3](https://tailwindcss.com/) — 社名「下線」に由来する下線モチーフのデザインシステム（[app/globals.css](app/globals.css)）
+- [shadcn/ui](https://ui.shadcn.com/) ベースの Button コンポーネント（[components/ui/button.tsx](components/ui/button.tsx)）
+- [lucide-react](https://lucide.dev/) アイコン
+- お問い合わせフォームは [FormSubmit](https://formsubmit.co/) 経由でメール送信（サーバ不要）
 
-## Deployment
+## 開発
 
-Your project is live at:
+```bash
+pnpm install
+pnpm dev        # http://localhost:3000
+```
 
-**[https://vercel.com/satellitexs-projects/v0-mobile-first-token-app](https://vercel.com/satellitexs-projects/v0-mobile-first-token-app)**
+## ビルドとプレビュー
 
-## Build your app
+```bash
+pnpm build      # 静的ファイルを out/ に生成
+pnpm preview    # http://localhost:3000/homepage/ で out/ を配信
+```
 
-Continue building your app on:
+`pnpm preview` は GitHub Pages と同じ `/homepage` ベースパスを再現する確認用サーバ（[scripts/preview-server.js](scripts/preview-server.js)）を起動します。
 
-**[https://v0.dev/chat/projects/jtJI3jyVrFN](https://v0.dev/chat/projects/jtJI3jyVrFN)**
+### basePath について
 
-## How It Works
+GitHub Pages のプロジェクトページ配下（`/homepage`）で公開するため、本番ビルドでは `basePath` / `assetPrefix` に `/homepage` が付きます（[next.config.mjs](next.config.mjs)）。開発時（`pnpm dev`）は付きません。ベースパスを変更する場合は [lib/site.ts](lib/site.ts) の `basePath` と `siteUrl` も合わせて更新してください。
 
-1. Create and modify your project using [v0.dev](https://v0.dev)
-2. Deploy your chats from the v0 interface
-3. Changes are automatically pushed to this repository
-4. Vercel deploys the latest version from this repository# homepage
-# homepage
+## ディレクトリ構成
+
+```
+app/            ページ (App Router)。トップ・お問い合わせ・プライバシーポリシー・利用規約など
+components/     共有コンポーネント (ヘッダー・フッター・お問い合わせフォームなど)
+components/ui/  shadcn/ui ベースの UI プリミティブ
+lib/site.ts     会社情報・サイトURL (会社情報の変更はここ)
+lib/content.ts  掲載コンテンツ (事業内容・実績・FAQ などの文言はここ)
+lib/structured-data.ts  SEO 用の JSON-LD 定義
+public/         静的アセット (OG画像・アイコン・llms.txt)
+scripts/        プレビュー用サーバ
+```
+
+## デプロイ
+
+`main` ブランチへ push すると GitHub Actions（[.github/workflows/pages.yaml](.github/workflows/pages.yaml)）がビルドし、GitHub Pages へ自動デプロイします。
+
+## SEO / LLMO
+
+- メタデータ・OGP: [app/layout.tsx](app/layout.tsx) と各ページの `metadata`
+- 構造化データ (JSON-LD): [lib/structured-data.ts](lib/structured-data.ts)
+- サイトマップ / robots: [app/sitemap.ts](app/sitemap.ts) / [app/robots.ts](app/robots.ts)
+- LLM 向けサイト概要: [public/llms.txt](public/llms.txt)
+
+コンテンツを更新した際は `llms.txt` と `sitemap.ts` の `lastModified` も忘れずに更新してください。
 
 ## Skill restore for new environments
 

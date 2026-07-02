@@ -1,6 +1,8 @@
 import type { Metadata } from "next"
 import { Noto_Sans_JP, Shippori_Mincho, IBM_Plex_Mono } from "next/font/google"
+import { JsonLd } from "@/components/json-ld"
 import { basePath, company, siteUrl } from "@/lib/site"
+import { organizationJsonLd, websiteJsonLd } from "@/lib/structured-data"
 import "./globals.css"
 
 const shippori = Shippori_Mincho({
@@ -89,51 +91,6 @@ export const metadata: Metadata = {
   },
 }
 
-const organizationJsonLd = {
-  "@context": "https://schema.org",
-  "@type": "Organization",
-  "@id": `${siteUrl}/#organization`,
-  name: company.name,
-  url: `${siteUrl}/`,
-  logo: `${siteUrl}/icon.svg`,
-  image: `${siteUrl}/og-image.png`,
-  description: company.description,
-  foundingDate: company.founded,
-  email: company.email,
-  sameAs: [company.xUrl],
-  address: {
-    "@type": "PostalAddress",
-    postalCode: company.postalCode,
-    addressRegion: "東京都",
-    addressLocality: "港区",
-    streetAddress: "浜松町二丁目2番15号 浜松町ダイヤビル2F",
-    addressCountry: "JP",
-  },
-  founder: {
-    "@type": "Person",
-    "@id": `${siteUrl}/#representative`,
-    name: company.representative,
-  },
-  knowsAbout: [
-    "ITコンサルティング",
-    "ブロックチェーン開発",
-    "スマートコントラクト",
-    "Web3",
-    "決済システム",
-    "Forward Deployed Engineering",
-  ],
-}
-
-const websiteJsonLd = {
-  "@context": "https://schema.org",
-  "@type": "WebSite",
-  "@id": `${siteUrl}/#website`,
-  name: company.name,
-  url: `${siteUrl}/`,
-  inLanguage: "ja",
-  publisher: { "@id": `${siteUrl}/#organization` },
-}
-
 export default function RootLayout({
   children,
 }: Readonly<{
@@ -148,14 +105,8 @@ export default function RootLayout({
           <style>{`.reveal{opacity:1;transform:none}.reveal-underline::after{transform:scaleX(1)}`}</style>
         </noscript>
         {children}
-        <script
-          type="application/ld+json"
-          dangerouslySetInnerHTML={{ __html: JSON.stringify(organizationJsonLd) }}
-        />
-        <script
-          type="application/ld+json"
-          dangerouslySetInnerHTML={{ __html: JSON.stringify(websiteJsonLd) }}
-        />
+        <JsonLd data={organizationJsonLd} />
+        <JsonLd data={websiteJsonLd} />
       </body>
     </html>
   )
