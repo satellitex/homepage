@@ -1,0 +1,396 @@
+/* ── 06 FAQ ─────────────────────────────────────
+   一本の光の線(rail)が Q を貫き、開いた行だけが青く灯る。
+   開閉は ::details-content の block-size を補間(html に interpolate-size: allow-keywords 設定済み)。
+   非対応ブラウザでは補間されず、ぱっと開閉するだけ。 */
+
+.list {
+  position: relative;
+  max-width: 56rem;
+}
+
+@media (min-width: 1280px) {
+  .list {
+    max-width: none;
+  }
+}
+
+@media (min-width: 1024px) {
+  .list {
+    padding-left: 2.75rem;
+  }
+}
+
+/* ── 貫く光の線 ── */
+.rail,
+.node {
+  display: none;
+}
+
+@media (min-width: 1024px) {
+  .rail {
+    display: block;
+    position: absolute;
+    left: 0.25rem;
+    top: 1.5rem;
+    bottom: 1.5rem;
+    width: 1px;
+    overflow: hidden;
+    background: linear-gradient(
+      180deg,
+      transparent,
+      rgba(0, 181, 255, 0.5) 12%,
+      rgba(99, 102, 255, 0.35) 88%,
+      transparent
+    );
+    transform-origin: top center;
+    pointer-events: none;
+  }
+
+  /* 線を走る光の粒 */
+  .rail::after {
+    content: "";
+    position: absolute;
+    left: 0;
+    top: 0;
+    width: 1px;
+    height: 14%;
+    background: linear-gradient(180deg, transparent, #ffffff, transparent);
+    box-shadow: 0 0 10px 1px rgba(0, 181, 255, 0.9);
+    transform: translateY(-100%);
+    animation: railRun 5.5s cubic-bezier(0.45, 0, 0.25, 1) 1.2s infinite;
+  }
+
+  .node {
+    display: block;
+    position: absolute;
+    top: 50%;
+    left: calc(-2.5rem - 4px);
+    width: 9px;
+    height: 9px;
+    margin-top: -4.5px;
+    border-radius: 9999px;
+    border: 1px solid var(--hairline-strong);
+    background: var(--bg);
+    pointer-events: none;
+    transition:
+      background 0.5s ease,
+      border-color 0.5s ease,
+      box-shadow 0.6s ease,
+      scale 0.6s cubic-bezier(0.16, 1, 0.3, 1);
+  }
+
+  /* 節点から行の縁へ伸びる細い線 */
+  .node::after {
+    content: "";
+    position: absolute;
+    top: 3.5px;
+    left: 100%;
+    width: 1.75rem;
+    height: 1px;
+    background: linear-gradient(90deg, var(--hairline-strong), transparent);
+    transition: background 0.6s ease;
+  }
+}
+
+:global(.js) .rail {
+  transform: scaleY(0);
+  transition: transform 1.9s cubic-bezier(0.65, 0, 0.35, 1) 0.1s;
+}
+
+:global(.js) .list:global(.is-in) .rail {
+  transform: scaleY(1);
+}
+
+:global(.js) .node {
+  scale: 0;
+}
+
+:global(.js) .list:global(.is-in) .node {
+  scale: 1;
+  animation: nodeIn 0.8s cubic-bezier(0.16, 1, 0.3, 1) calc(0.45s + var(--i, 0) * 0.12s) backwards;
+}
+
+/* ── 行 ── */
+.list .item {
+  --spot-radius: 1rem;
+  transition:
+    border-color 0.45s ease,
+    box-shadow 0.6s ease,
+    background-color 0.6s ease,
+    transform 0.6s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.list .item:hover {
+  border-color: rgba(160, 190, 240, 0.26);
+}
+
+.list details.item[open] {
+  border-color: rgba(0, 181, 255, 0.42);
+  background-color: rgba(0, 181, 255, 0.04);
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.08),
+    inset 0 0 90px -30px rgba(0, 181, 255, 0.16),
+    0 30px 90px -40px rgba(0, 181, 255, 0.5),
+    0 0 0 4px rgba(0, 181, 255, 0.035);
+}
+
+.list details.item[open] .node {
+  scale: 1.35;
+  border-color: var(--beam-azure);
+  background: var(--beam-azure);
+  box-shadow:
+    0 0 10px 1px rgba(0, 181, 255, 0.9),
+    0 0 28px 4px rgba(0, 181, 255, 0.4);
+}
+
+.list details.item[open] .node::after {
+  background: linear-gradient(90deg, rgba(0, 181, 255, 0.7), transparent);
+}
+
+/* ── 開閉アニメーション ── */
+.item::details-content {
+  block-size: 0;
+  overflow: hidden;
+  transition:
+    block-size 0.55s cubic-bezier(0.16, 1, 0.3, 1),
+    content-visibility 0.55s allow-discrete;
+}
+
+.item[open]::details-content {
+  block-size: auto;
+}
+
+/* ── 質問 ── */
+.summary {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  padding: 1.15rem 1.15rem 1.15rem 1.25rem;
+  border-radius: 1rem;
+  cursor: pointer;
+  list-style: none;
+  -webkit-tap-highlight-color: transparent;
+}
+
+.summary::-webkit-details-marker {
+  display: none;
+}
+
+.summary:focus-visible {
+  outline: 2px solid var(--beam-azure);
+  outline-offset: 3px;
+  border-radius: 1rem;
+}
+
+@media (min-width: 640px) {
+  .summary {
+    gap: 1.5rem;
+    padding: 1.6rem 1.6rem 1.6rem 2rem;
+  }
+}
+
+/* 質問の下に引かれる光の線(開いたときに左から走る) */
+.summary::after {
+  content: "";
+  position: absolute;
+  left: 1.25rem;
+  right: 1.25rem;
+  bottom: 0;
+  height: 1px;
+  background: var(--beam-gradient);
+  box-shadow:
+    0 0 10px rgba(0, 181, 255, 0.7),
+    0 0 26px rgba(0, 181, 255, 0.3);
+  transform: scaleX(0);
+  transform-origin: left center;
+  transition: transform 0.5s cubic-bezier(0.22, 1, 0.36, 1);
+  pointer-events: none;
+}
+
+@media (min-width: 640px) {
+  .summary::after {
+    left: 2rem;
+    right: 2rem;
+  }
+}
+
+.item[open] .summary::after {
+  transform: scaleX(1);
+  transition: transform 1s cubic-bezier(0.22, 1, 0.36, 1) 0.08s;
+}
+
+.heading {
+  display: flex;
+  min-width: 0;
+  flex: 1;
+  flex-direction: column;
+  gap: 0.45rem;
+}
+
+@media (min-width: 640px) {
+  .heading {
+    flex-direction: row;
+    align-items: baseline;
+    gap: 1.25rem;
+  }
+}
+
+.index {
+  flex-shrink: 0;
+  font-family: var(--font-mono), monospace;
+  font-size: 0.68rem;
+  letter-spacing: 0.22em;
+  color: var(--fg-dim);
+  transition:
+    color 0.4s ease,
+    text-shadow 0.4s ease;
+}
+
+@media (min-width: 640px) {
+  .index {
+    width: 2.5rem;
+  }
+}
+
+.item:hover .index {
+  color: var(--fg-muted);
+}
+
+.item[open] .index {
+  color: var(--beam-sky);
+  text-shadow: 0 0 14px rgba(0, 181, 255, 0.7);
+}
+
+.question {
+  font-size: 0.98rem;
+  font-weight: 600;
+  line-height: 1.6;
+  letter-spacing: -0.005em;
+  color: var(--fg);
+  text-wrap: pretty;
+}
+
+@media (min-width: 640px) {
+  .question {
+    font-size: 1.15rem;
+  }
+}
+
+/* ＋アイコン */
+.plus {
+  display: grid;
+  flex-shrink: 0;
+  place-items: center;
+  width: 2.25rem;
+  height: 2.25rem;
+  border-radius: 9999px;
+  border: 1px solid var(--hairline-strong);
+  background: rgba(148, 178, 230, 0.04);
+  color: var(--fg-muted);
+  transition:
+    color 0.4s ease,
+    border-color 0.4s ease,
+    background 0.4s ease,
+    box-shadow 0.5s ease;
+}
+
+.plus svg {
+  transition: transform 0.6s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.item:hover .plus {
+  color: var(--fg);
+  border-color: rgba(160, 190, 240, 0.4);
+}
+
+.item[open] .plus {
+  color: var(--beam-azure);
+  border-color: rgba(0, 181, 255, 0.55);
+  background: rgba(0, 181, 255, 0.1);
+  box-shadow: 0 0 26px -4px rgba(0, 181, 255, 0.65);
+}
+
+.item[open] .plus svg {
+  transform: rotate(45deg);
+}
+
+/* ── 回答 ── */
+.answer {
+  margin: 0;
+  padding: 1.25rem 1.25rem 1.5rem;
+  font-size: 0.95rem;
+  line-height: 1.9;
+  color: var(--fg-muted);
+}
+
+@media (min-width: 640px) {
+  .answer {
+    padding: 1.5rem 2.5rem 2rem 5.75rem;
+    font-size: 1rem;
+  }
+}
+
+.item[open] .answer {
+  animation: answerIn 0.9s cubic-bezier(0.16, 1, 0.3, 1) 0.1s both;
+}
+
+@keyframes answerIn {
+  from {
+    opacity: 0;
+    transform: translateY(-10px);
+    filter: blur(6px);
+  }
+
+  to {
+    opacity: 1;
+    transform: none;
+    filter: none;
+  }
+}
+
+@keyframes nodeIn {
+  from {
+    scale: 0;
+  }
+}
+
+@keyframes railRun {
+  0% {
+    transform: translateY(-100%);
+  }
+
+  55%,
+  100% {
+    transform: translateY(720%);
+  }
+}
+
+/* ── 動きを減らす設定 ── */
+@media (prefers-reduced-motion: reduce) {
+  .item::details-content {
+    transition: none;
+  }
+
+  .item[open] .answer {
+    animation: none;
+  }
+
+  .rail::after {
+    display: none;
+    animation: none;
+  }
+
+  :global(.js) .rail {
+    transform: none;
+  }
+
+  :global(.js) .node {
+    scale: 1;
+  }
+
+  .summary::after {
+    transition: none;
+  }
+}

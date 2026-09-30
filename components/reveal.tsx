@@ -1,44 +1,43 @@
 "use client"
 
-import { useEffect, useRef, type ElementType, type ReactNode } from "react"
+import { useRef, type CSSProperties, type ElementType, type ReactNode } from "react"
+import { useInViewClass } from "@/components/fx/use-in-view"
+import { cn, cssVars } from "@/lib/utils"
 
-type RevealProps = {
+type InViewProps = {
   as?: ElementType
   className?: string
+  /** 要素の何割が見えたら .is-in を付けるか */
+  threshold?: number
+  style?: CSSProperties
   children: ReactNode
 }
 
-export function Reveal({ as: Tag = "div", className = "", children }: RevealProps) {
+/** 画面内に入ったら .is-in を付けるだけの入れ物。中の CSS アニメーション(光の線など)の起点にする */
+export function InView({ as: Tag = "div", className, threshold = 0.25, style, children }: InViewProps) {
   const ref = useRef<HTMLElement | null>(null)
-
-  useEffect(() => {
-    const element = ref.current
-    if (!element) return
-
-    if (typeof IntersectionObserver === "undefined") {
-      element.classList.add("is-revealed")
-      return
-    }
-
-    const observer = new IntersectionObserver(
-      (entries) => {
-        for (const entry of entries) {
-          if (entry.isIntersecting) {
-            entry.target.classList.add("is-revealed")
-            observer.unobserve(entry.target)
-          }
-        }
-      },
-      { threshold: 0.15, rootMargin: "0px 0px -40px 0px" },
-    )
-
-    observer.observe(element)
-    return () => observer.disconnect()
-  }, [])
+  useInViewClass(ref, { threshold })
 
   return (
-    <Tag ref={ref} className={`reveal ${className}`}>
+    <Tag ref={ref} className={className} style={style}>
       {children}
     </Tag>
+  )
+}
+
+type RevealProps = Omit<InViewProps, "style"> & {
+  /** 表示開始までの遅延(ms)。並んだ要素を順番に出すときに使う */
+  delay?: number
+}
+
+/** 画面内に入ると、ぼかしを解きながら下から浮かび上がる */
+export function Reveal({ className, delay = 0, threshold = 0.15, ...props }: RevealProps) {
+  return (
+    <InView
+      {...props}
+      className={cn("reveal", className)}
+      threshold={threshold}
+      style={delay ? cssVars({ "--reveal-delay": `${delay}ms` }) : undefined}
+    />
   )
 }
