@@ -1,0 +1,266 @@
+/* サブページ(お問い合わせ / プライバシー / 利用規約)の背景と見出しまわりの演出 */
+
+/* ── ページ上部のオーロラ ─────────────────────
+   青と藍の光がゆっくり漂い、下に向かって闇へ溶ける */
+.aurora {
+  position: absolute;
+  inset: 0 0 auto 0;
+  height: 46rem;
+  overflow: hidden;
+  pointer-events: none;
+  -webkit-mask-image: linear-gradient(to bottom, #000 40%, transparent);
+  mask-image: linear-gradient(to bottom, #000 40%, transparent);
+}
+
+.blob {
+  position: absolute;
+  left: 50%;
+  border-radius: 9999px;
+  will-change: transform;
+}
+
+.blobAzure {
+  top: -15rem;
+  width: 72rem;
+  height: 38rem;
+  margin-left: -47rem;
+  background: radial-gradient(closest-side, rgba(0, 181, 255, 0.3), rgba(0, 181, 255, 0.08) 58%, transparent);
+  animation: drift-a 17s ease-in-out infinite alternate;
+}
+
+.blobIndigo {
+  top: -13rem;
+  width: 62rem;
+  height: 36rem;
+  margin-left: -7rem;
+  background: radial-gradient(closest-side, rgba(99, 102, 255, 0.34), rgba(99, 102, 255, 0.09) 58%, transparent);
+  animation: drift-b 21s ease-in-out infinite alternate;
+}
+
+.blobBlue {
+  top: 3rem;
+  width: 48rem;
+  height: 22rem;
+  margin-left: -24rem;
+  background: radial-gradient(closest-side, rgba(0, 87, 217, 0.3), transparent);
+  animation: drift-c 25s ease-in-out infinite alternate;
+}
+
+@media (max-width: 640px) {
+  .blobAzure {
+    width: 44rem;
+    margin-left: -30rem;
+  }
+
+  .blobIndigo {
+    width: 42rem;
+    margin-left: -12rem;
+  }
+
+  .blobBlue {
+    width: 34rem;
+    margin-left: -17rem;
+  }
+}
+
+/* スクロールすると少し遅れて流れ、薄れていく(対応ブラウザのみ) */
+@supports (animation-timeline: scroll()) {
+  .aurora {
+    animation: aurora-scroll linear both;
+    animation-timeline: scroll(root);
+    animation-range: 0 70vh;
+  }
+}
+
+/* ── 見出しの下線から伸びる光の地平線 ───────────
+   h1 の下線(.beam-underline)と同じ高さを、画面の端から端まで一本の線が走る。
+   描画は SplitText が付ける .is-in を起点にする */
+.title {
+  position: relative;
+}
+
+.title::before,
+.title::after {
+  content: "";
+  position: absolute;
+  left: 50%;
+  bottom: -0.14em;
+  pointer-events: none;
+}
+
+/* 地平線そのもの(両端に向かって消える) */
+.title::after {
+  width: 100vw;
+  height: 1px;
+  transform: translateX(-50%);
+  background: linear-gradient(90deg, transparent, rgba(160, 190, 240, 0.32) 22%, rgba(160, 190, 240, 0.32) 78%, transparent);
+}
+
+:global(.js) .title::after {
+  transform: translateX(-50%) scaleX(0);
+  transition: transform 1.8s cubic-bezier(0.22, 1, 0.36, 1) 0.7s;
+}
+
+:global(.js) .title:global(.is-in)::after {
+  transform: translateX(-50%) scaleX(1);
+}
+
+/* 線の上を時折すべる光の粒 */
+.title::before {
+  width: 26vw;
+  max-width: 26rem;
+  height: 2px;
+  margin-left: -13vw;
+  border-radius: 9999px;
+  background: linear-gradient(90deg, transparent, var(--beam-azure) 55%, #ffffff);
+  box-shadow:
+    0 0 14px rgba(0, 181, 255, 0.85),
+    0 0 40px rgba(0, 181, 255, 0.4);
+  opacity: 0;
+}
+
+:global(.js) .title:global(.is-in)::before {
+  animation: comet 9s cubic-bezier(0.45, 0, 0.25, 1) 2.4s infinite;
+}
+
+/* ── 規約・ポリシー本文の「一本の線」 ────────────
+   本文の左に光の縦線が上から下へ引かれ、段落ごとに光の点が灯る */
+.legal {
+  --legal-pad: 1.5rem;
+  position: relative;
+  padding-left: var(--legal-pad);
+}
+
+@media (min-width: 640px) {
+  .legal {
+    --legal-pad: 2.25rem;
+  }
+}
+
+.legal::before {
+  content: "";
+  position: absolute;
+  left: 0.2rem;
+  top: 0.55rem;
+  bottom: 0.55rem;
+  width: 1px;
+  background: linear-gradient(to bottom, var(--beam-azure), rgba(160, 190, 240, 0.24) 40%, rgba(160, 190, 240, 0.06));
+  box-shadow: 0 0 12px rgba(0, 181, 255, 0.35);
+  transform-origin: top center;
+}
+
+.legal > p {
+  position: relative;
+}
+
+.legal > p::before {
+  content: "";
+  position: absolute;
+  left: calc(var(--legal-pad) * -1);
+  top: 0.95em;
+  margin-top: -0.2rem;
+  width: 0.4rem;
+  height: 0.4rem;
+  border-radius: 9999px;
+  background: var(--beam-azure);
+  box-shadow:
+    0 0 0 3px rgba(0, 181, 255, 0.14),
+    0 0 12px var(--beam-azure);
+}
+
+:global(.js) .legal::before {
+  transform: scaleY(0);
+}
+
+:global(.js) .legal > p::before {
+  transform: scale(0);
+  opacity: 0;
+}
+
+:global(.js) :global(.reveal.is-in) .legal::before {
+  transform: scaleY(1);
+  transition: transform 1.8s cubic-bezier(0.22, 1, 0.36, 1) 0.6s;
+}
+
+:global(.js) :global(.reveal.is-in) .legal > p::before {
+  transform: scale(1);
+  opacity: 1;
+  transition:
+    transform 0.7s cubic-bezier(0.34, 1.56, 0.64, 1),
+    opacity 0.5s ease;
+}
+
+:global(.js) :global(.reveal.is-in) .legal > p:nth-child(1)::before {
+  transition-delay: 0.9s;
+}
+
+:global(.js) :global(.reveal.is-in) .legal > p:nth-child(2)::before {
+  transition-delay: 1.2s;
+}
+
+:global(.js) :global(.reveal.is-in) .legal > p:nth-child(3)::before {
+  transition-delay: 1.5s;
+}
+
+@keyframes comet {
+  0% {
+    opacity: 0;
+    transform: translateX(-70vw);
+  }
+
+  4% {
+    opacity: 1;
+  }
+
+  30% {
+    opacity: 1;
+  }
+
+  34%,
+  100% {
+    opacity: 0;
+    transform: translateX(70vw);
+  }
+}
+
+@keyframes drift-a {
+  to {
+    transform: translate3d(7rem, 3rem, 0) scale(1.1);
+  }
+}
+
+@keyframes drift-b {
+  to {
+    transform: translate3d(-8rem, 2.5rem, 0) scale(1.12);
+  }
+}
+
+@keyframes drift-c {
+  to {
+    transform: translate3d(4rem, -1.5rem, 0) scale(1.15);
+  }
+}
+
+@keyframes aurora-scroll {
+  to {
+    transform: translateY(7rem);
+    opacity: 0.25;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .blobAzure,
+  .blobIndigo,
+  .blobBlue,
+  .aurora {
+    animation: none;
+  }
+
+  .title::before {
+    display: none;
+  }
+
+  :global(.js) .title::after {
+    transform: translateX(-50%) scaleX(1);
+  }
+}

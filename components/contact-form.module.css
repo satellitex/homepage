@@ -1,0 +1,216 @@
+/* お問い合わせフォームの入力・送信・完了まわりの演出 */
+
+/* Chrome / Safari のオートフィルが入力欄を白や黄色に塗り替えないようにする */
+.field:-webkit-autofill,
+.field:-webkit-autofill:hover,
+.field:-webkit-autofill:focus {
+  -webkit-text-fill-color: var(--fg);
+  caret-color: var(--fg);
+  transition: background-color 99999s ease-out 0s;
+}
+
+/* ── 送信中 ────────────────────────────────
+   ボタンの上を光が流れ続け、紙飛行機が飛び立つ */
+.sending:global(.btn-primary)::before {
+  transform: translateX(-120%);
+  animation: sweep 1.3s cubic-bezier(0.45, 0, 0.25, 1) infinite;
+}
+
+.sendingIcon {
+  animation: fly 1.2s cubic-bezier(0.5, 0, 0.2, 1) infinite;
+}
+
+@keyframes sweep {
+  from {
+    transform: translateX(-120%);
+  }
+
+  to {
+    transform: translateX(120%);
+  }
+}
+
+@keyframes fly {
+  0% {
+    opacity: 0;
+    transform: translate3d(-8px, 8px, 0);
+  }
+
+  30% {
+    opacity: 1;
+  }
+
+  100% {
+    opacity: 0;
+    transform: translate3d(16px, -16px, 0);
+  }
+}
+
+/* ── エラー表示 ── */
+.errorIn {
+  animation: error-in 0.6s cubic-bezier(0.16, 1, 0.3, 1) both;
+}
+
+@keyframes error-in {
+  from {
+    opacity: 0;
+    transform: translate3d(0, -8px, 0);
+    filter: blur(6px);
+  }
+
+  to {
+    opacity: 1;
+    transform: none;
+    filter: none;
+  }
+}
+
+/* ── コピー完了のチェック ── */
+.pop {
+  animation: pop 0.45s cubic-bezier(0.34, 1.56, 0.64, 1) both;
+}
+
+@keyframes pop {
+  from {
+    opacity: 0;
+    transform: scale(0.3);
+  }
+
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+/* ── 送信完了カード ─────────────────────────
+   カードが浮かび、円とチェックが光の線で描かれ、リングが広がる */
+.cardIn {
+  animation: card-in 0.9s cubic-bezier(0.16, 1, 0.3, 1) both;
+}
+
+@keyframes card-in {
+  from {
+    opacity: 0;
+    transform: translate3d(0, 20px, 0) scale(0.985);
+    filter: blur(8px);
+  }
+
+  to {
+    opacity: 1;
+    transform: none;
+    filter: none;
+  }
+}
+
+.badge {
+  position: relative;
+  display: grid;
+  width: 4.5rem;
+  height: 4.5rem;
+  place-items: center;
+}
+
+.badge svg {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  overflow: visible;
+  filter: drop-shadow(0 0 12px rgba(0, 181, 255, 0.55));
+}
+
+.badge::before {
+  content: "";
+  position: absolute;
+  inset: -1.25rem;
+  border-radius: 9999px;
+  background: radial-gradient(closest-side, rgba(0, 181, 255, 0.28), transparent);
+  animation: badge-glow 1.4s ease-out 0.7s both;
+}
+
+.ring {
+  position: absolute;
+  inset: 0;
+  border-radius: 9999px;
+  border: 1px solid rgba(125, 216, 255, 0.7);
+  animation: ring-out 1.6s cubic-bezier(0.22, 1, 0.36, 1) 0.95s both;
+}
+
+.circle {
+  stroke-dasharray: 152;
+  stroke-dashoffset: 152;
+  animation: draw 1s cubic-bezier(0.65, 0, 0.35, 1) 0.2s forwards;
+}
+
+.tick {
+  stroke-dasharray: 40;
+  stroke-dashoffset: 40;
+  animation: draw 0.55s cubic-bezier(0.65, 0, 0.35, 1) 0.95s forwards;
+}
+
+.beamLine {
+  width: 0;
+  animation: line-grow 1s cubic-bezier(0.22, 1, 0.36, 1) 0.9s forwards;
+}
+
+@keyframes draw {
+  to {
+    stroke-dashoffset: 0;
+  }
+}
+
+@keyframes ring-out {
+  from {
+    opacity: 0.9;
+    transform: scale(0.85);
+  }
+
+  to {
+    opacity: 0;
+    transform: scale(2.2);
+  }
+}
+
+@keyframes badge-glow {
+  from {
+    opacity: 0;
+    transform: scale(0.6);
+  }
+
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+@keyframes line-grow {
+  to {
+    width: 3rem;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .sending:global(.btn-primary)::before,
+  .sendingIcon,
+  .errorIn,
+  .pop,
+  .cardIn,
+  .badge::before,
+  .ring {
+    animation: none;
+  }
+
+  .ring {
+    display: none;
+  }
+
+  .circle,
+  .tick {
+    animation: none;
+    stroke-dashoffset: 0;
+  }
+
+  .beamLine {
+    animation: none;
+    width: 3rem;
+  }
+}

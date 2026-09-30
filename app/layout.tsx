@@ -1,30 +1,42 @@
-import type { Metadata } from "next"
-import { Noto_Sans_JP, Shippori_Mincho, IBM_Plex_Mono } from "next/font/google"
+import type { Metadata, Viewport } from "next"
+import { Geist, Geist_Mono, Noto_Sans_JP } from "next/font/google"
 import { JsonLd } from "@/components/json-ld"
+import { CursorGlow } from "@/components/fx/cursor-glow"
+import { LoopGate } from "@/components/fx/loop-gate"
+import { ScrollProgress } from "@/components/fx/scroll-progress"
+import { SmoothScroll } from "@/components/fx/smooth-scroll"
 import { basePath, company, siteUrl } from "@/lib/site"
 import { organizationJsonLd, websiteJsonLd } from "@/lib/structured-data"
 import "./globals.css"
 
-const shippori = Shippori_Mincho({
+// 欧文は Geist、和文は Noto Sans JP、ラベルは Geist Mono
+const geist = Geist({
   subsets: ["latin"],
-  weight: ["500", "600", "700"],
-  variable: "--font-display",
+  variable: "--font-sans",
   display: "swap",
 })
 
+// 可変フォントにして、太さごとに @font-face が増えないようにする(和文フォントは分割ファイルが多いため)
 const notoSansJp = Noto_Sans_JP({
   subsets: ["latin"],
-  weight: ["400", "500", "700"],
-  variable: "--font-body",
+  variable: "--font-jp",
   display: "swap",
 })
 
-const plexMono = IBM_Plex_Mono({
+const geistMono = Geist_Mono({
   subsets: ["latin"],
-  weight: ["400", "500"],
   variable: "--font-mono",
   display: "swap",
 })
+
+// 描画前に実行: JS 有効の印(アニメーション前の非表示状態は .js 配下だけで効かせる)と、
+// 同じセッションで再訪したときにイントロ演出を省く印を付ける
+const bootScript = `(function(){var d=document.documentElement;d.classList.add("js");try{if(sessionStorage.getItem("intro-seen"))d.classList.add("intro-seen")}catch(e){}})()`
+
+export const viewport: Viewport = {
+  themeColor: "#05070c",
+  colorScheme: "dark",
+}
 
 export const metadata: Metadata = {
   metadataBase: new URL(siteUrl),
@@ -97,14 +109,17 @@ export default function RootLayout({
   children: React.ReactNode
 }>) {
   return (
-    <html lang="ja">
-      <body
-        className={`${shippori.variable} ${notoSansJp.variable} ${plexMono.variable} font-body antialiased`}
-      >
-        <noscript>
-          <style>{`.reveal{opacity:1;transform:none}.reveal-underline::after{transform:scaleX(1)}`}</style>
-        </noscript>
+    <html lang="ja" className={`${geist.variable} ${notoSansJp.variable} ${geistMono.variable}`} suppressHydrationWarning>
+      <head>
+        <script dangerouslySetInnerHTML={{ __html: bootScript }} />
+      </head>
+      <body className="font-sans antialiased">
+        <SmoothScroll />
+        <ScrollProgress />
+        <CursorGlow />
         {children}
+        <LoopGate />
+        <div className="grain" aria-hidden="true" />
         <JsonLd data={organizationJsonLd} />
         <JsonLd data={websiteJsonLd} />
       </body>

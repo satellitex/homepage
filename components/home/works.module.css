@@ -1,0 +1,542 @@
+/* ───────────────────────────────────────────
+   03 TRACK RECORD ― スクロールで描かれる光のタイムライン
+   ・既定(JS なし / 動きを減らす設定)は「すべて点灯した最終状態」
+   ・アニメーション前の隠れた状態は :global(.js) かつ no-preference のときだけ効かせる
+   ─────────────────────────────────────────── */
+
+.root {
+  --ease: cubic-bezier(0.16, 1, 0.3, 1);
+  --rail-x: 0.6875rem;
+  --card-x: 2.25rem;
+  --node-y: 0.85rem;
+  --card-shift: -12px;
+  position: relative;
+}
+
+@media (min-width: 768px) {
+  .root {
+    --period-w: 11rem;
+    --gap: 4rem;
+    --rail-x: calc(var(--period-w) + var(--gap) / 2);
+    --card-x: calc(var(--period-w) + var(--gap));
+    --node-y: 3.05rem;
+    --card-shift: -28px;
+  }
+}
+
+@media (min-width: 1024px) {
+  .root {
+    --period-w: 13rem;
+    --gap: 4.5rem;
+  }
+}
+
+/* rail の下端(スクロール対象の下端)= 光の線が折れて区切り線になる角 */
+.wrap {
+  position: relative;
+  padding-bottom: 3.5rem;
+}
+
+.list {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.item {
+  position: relative;
+  padding-left: var(--card-x);
+}
+
+.item + .item {
+  margin-top: 2.5rem;
+}
+
+@media (min-width: 768px) {
+  .item {
+    display: grid;
+    grid-template-columns: var(--period-w) minmax(0, 1fr);
+    column-gap: var(--gap);
+    padding-left: 0;
+  }
+
+  .item + .item {
+    margin-top: 3.25rem;
+  }
+}
+
+/* ── 期間(左カラム) ─────────────────────────── */
+.periodCol {
+  display: flex;
+  align-items: center;
+  height: calc(var(--node-y) * 2);
+  margin-bottom: 0.65rem;
+}
+
+@media (min-width: 768px) {
+  .periodCol {
+    justify-content: flex-end;
+    margin-bottom: 0;
+  }
+}
+
+.period {
+  white-space: nowrap;
+  font-variant-numeric: tabular-nums;
+  color: var(--fg);
+  text-shadow: 0 0 28px rgba(0, 181, 255, 0.4);
+  transition:
+    color 0.7s var(--ease),
+    text-shadow 0.9s var(--ease),
+    transform 0.9s var(--ease);
+}
+
+/* ── レール(1px のトラック + 光のビーム + 先端) ──
+   --p / --h / --tip-o / --trail は WorksTimeline が rail に直接書き込む */
+.rail {
+  position: absolute;
+  z-index: 1;
+  top: 0;
+  bottom: 0;
+  left: var(--rail-x);
+  width: 0;
+  pointer-events: none;
+}
+
+.track {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: -0.5px;
+  width: 1px;
+  background: linear-gradient(to bottom, transparent, var(--hairline-strong) 3rem, var(--hairline-strong));
+}
+
+.beam {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: -1px;
+  width: 2px;
+  border-radius: 9999px;
+  transform-origin: 50% 0;
+  background: linear-gradient(
+    to bottom,
+    rgba(99, 102, 255, 0) 0,
+    var(--beam-indigo) 5%,
+    #2f7bff 45%,
+    var(--beam-azure) 82%,
+    var(--beam-sky) 100%
+  );
+  box-shadow:
+    0 0 8px rgba(0, 181, 255, 0.85),
+    0 0 26px 2px rgba(0, 181, 255, 0.4);
+}
+
+/* ビームの芯(レーザーのように中心だけ白く光る) */
+.beam::after {
+  content: "";
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 0.5px;
+  width: 1px;
+  background: linear-gradient(to bottom, rgba(255, 255, 255, 0), rgba(255, 255, 255, 0.35) 40%, #fff);
+}
+
+.tip {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 0;
+  height: 0;
+  display: none;
+}
+
+.trail {
+  position: absolute;
+  bottom: 0;
+  left: -1px;
+  width: 2px;
+  height: min(var(--trail, 60px), calc(var(--p, 0) * var(--h, 0px)));
+  background: linear-gradient(to top, #fff, rgba(125, 216, 255, 0.85) 30%, rgba(0, 181, 255, 0));
+}
+
+.tipGlow {
+  position: absolute;
+  left: -34px;
+  top: -34px;
+  width: 68px;
+  height: 68px;
+  border-radius: 9999px;
+  background: radial-gradient(circle, rgba(0, 181, 255, 0.5), rgba(0, 181, 255, 0.12) 45%, transparent 70%);
+  animation: tipBreath 1.8s ease-in-out infinite;
+}
+
+.tipDot {
+  position: absolute;
+  left: -4.5px;
+  top: -4.5px;
+  width: 9px;
+  height: 9px;
+  border-radius: 9999px;
+  background: #fff;
+  box-shadow:
+    0 0 6px 2px #fff,
+    0 0 18px 6px rgba(0, 181, 255, 0.95),
+    0 0 44px 14px rgba(0, 181, 255, 0.5);
+}
+
+.spark {
+  position: absolute;
+  left: -1.5px;
+  top: -1.5px;
+  width: 3px;
+  height: 3px;
+  border-radius: 9999px;
+  background: #d9f1ff;
+  box-shadow:
+    0 0 6px 1px rgba(0, 181, 255, 0.95),
+    0 0 14px 2px rgba(0, 181, 255, 0.5);
+  opacity: 0;
+  animation: spark 1.9s cubic-bezier(0.2, 0.7, 0.3, 1) infinite;
+  animation-delay: var(--d, 0s);
+}
+
+/* ── ノード(レール上の点) ───────────────────── */
+.node {
+  position: absolute;
+  z-index: 2;
+  top: var(--node-y);
+  left: var(--rail-x);
+  width: 0;
+  height: 0;
+  pointer-events: none;
+}
+
+.nodeHalo {
+  position: absolute;
+  left: -24px;
+  top: -24px;
+  width: 48px;
+  height: 48px;
+  border-radius: 9999px;
+  background: radial-gradient(circle, rgba(0, 181, 255, 0.32), transparent 65%);
+  transition: opacity 0.8s var(--ease);
+}
+
+.nodeRing {
+  position: absolute;
+  left: -5px;
+  top: -5px;
+  width: 10px;
+  height: 10px;
+  border-radius: 9999px;
+  border: 1px solid var(--beam-azure);
+  opacity: 0;
+}
+
+.nodeCore {
+  position: absolute;
+  left: -5px;
+  top: -5px;
+  width: 10px;
+  height: 10px;
+  border-radius: 9999px;
+  background: #fff;
+  box-shadow:
+    0 0 0 3px rgba(0, 181, 255, 0.28),
+    0 0 14px 2px rgba(0, 181, 255, 0.95),
+    0 0 36px 8px rgba(0, 181, 255, 0.4);
+  transition:
+    background 0.5s ease,
+    box-shadow 0.7s var(--ease),
+    transform 0.8s var(--ease);
+}
+
+/* ノードから横に伸びてカードへつながる枝(デスクトップのみ) */
+.connector {
+  position: absolute;
+  z-index: 1;
+  display: none;
+  top: var(--node-y);
+  left: var(--rail-x);
+  width: calc(var(--card-x) - var(--rail-x));
+  height: 1px;
+  margin-top: -0.5px;
+  transform-origin: 0 50%;
+  background: linear-gradient(90deg, var(--beam-azure), rgba(125, 216, 255, 0.7));
+  box-shadow: 0 0 10px rgba(0, 181, 255, 0.65);
+  transition: transform 0.9s var(--ease) 0.08s;
+}
+
+@media (min-width: 768px) {
+  .connector {
+    display: block;
+  }
+}
+
+/* ── カード ─────────────────────────────────── */
+.cardCol {
+  min-width: 0;
+}
+
+.cardX {
+  transition:
+    opacity 1s var(--ease),
+    transform 1.2s var(--ease),
+    filter 1s var(--ease);
+  transition-delay: 0.14s;
+}
+
+.card {
+  position: relative;
+  transition:
+    border-color 0.6s ease,
+    box-shadow 0.6s ease;
+}
+
+.item[data-lit] .card {
+  border-color: rgba(125, 190, 255, 0.17);
+}
+
+.role {
+  font-family: var(--font-sans), var(--font-jp), "Hiragino Sans", "Hiragino Kaku Gothic ProN", sans-serif;
+  letter-spacing: 0.02em;
+}
+
+.sweepClip {
+  position: absolute;
+  inset: 0;
+  overflow: hidden;
+  border-radius: inherit;
+  pointer-events: none;
+}
+
+.sweep {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 46%;
+  height: 1px;
+  opacity: 0;
+  transform: translateX(-100%);
+  background: linear-gradient(90deg, transparent, var(--beam-azure), #fff 72%, transparent);
+  box-shadow: 0 0 12px rgba(0, 181, 255, 0.9);
+}
+
+/* ── 終端(区切り線 + 脚注) ─────────────────── */
+.divider {
+  position: absolute;
+  left: var(--rail-x);
+  bottom: 0;
+  width: min(30rem, calc(100% - var(--rail-x)));
+  height: 1px;
+  transform-origin: 0 50%;
+  background: linear-gradient(90deg, var(--beam-sky), var(--beam-azure) 22%, rgba(47, 123, 255, 0.5) 62%, transparent);
+  box-shadow: 0 0 14px rgba(0, 181, 255, 0.55);
+  transition: transform 1.4s cubic-bezier(0.65, 0, 0.35, 1) 0.05s;
+}
+
+.divider::before {
+  content: "";
+  position: absolute;
+  left: -3px;
+  top: -3px;
+  width: 7px;
+  height: 7px;
+  border-radius: 9999px;
+  background: #fff;
+  box-shadow:
+    0 0 8px 2px #fff,
+    0 0 22px 6px rgba(0, 181, 255, 0.8);
+  transition: opacity 1.2s ease 0.5s;
+}
+
+.footnote {
+  margin-top: 1.75rem;
+  padding-left: var(--card-x);
+  transition:
+    opacity 1.1s var(--ease) 0.55s,
+    transform 1.2s var(--ease) 0.55s,
+    filter 1.1s var(--ease) 0.55s;
+}
+
+/* ── 発火時のワンショット演出(data-lit / data-seen が付いた瞬間に再生) ── */
+.item[data-lit] .nodeCore {
+  animation: nodePop 0.95s var(--ease) both;
+}
+
+.item[data-lit] .nodeRing {
+  animation: ringOut 1.5s var(--ease) both;
+}
+
+.item[data-lit] .nodeRing + .nodeRing {
+  animation-delay: 0.2s;
+}
+
+.item[data-active] .nodeHalo {
+  animation: halo 3.6s ease-in-out infinite;
+}
+
+.item[data-active] .card {
+  border-color: rgba(0, 181, 255, 0.3);
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.07),
+    0 30px 80px -40px rgba(0, 181, 255, 0.45);
+}
+
+.item[data-active] .period {
+  text-shadow: 0 0 22px rgba(0, 181, 255, 0.75);
+}
+
+.item[data-seen] .sweep {
+  animation: sweep 1.6s var(--ease) 0.3s both;
+}
+
+/* ── アニメーション前の状態(JS 有効 かつ 動きを減らさない設定のときだけ) ── */
+@media (prefers-reduced-motion: no-preference) {
+  :global(.js) .rail .beam {
+    transform: scaleY(var(--p, 0));
+  }
+
+  :global(.js) .rail .tip {
+    display: block;
+    opacity: var(--tip-o, 0);
+    transform: translate3d(0, calc(var(--p, 0) * var(--h, 0px)), 0);
+  }
+
+  :global(.js) .item:not([data-lit]) .nodeCore {
+    background: var(--bg);
+    box-shadow:
+      inset 0 0 0 1px var(--hairline-strong),
+      0 0 0 4px var(--bg);
+    transform: scale(0.72);
+  }
+
+  :global(.js) .item:not([data-lit]) .nodeHalo {
+    opacity: 0;
+  }
+
+  :global(.js) .item:not([data-lit]) .connector {
+    transform: scaleX(0);
+  }
+
+  :global(.js) .item:not([data-lit]) .period {
+    color: var(--fg-muted);
+    text-shadow: none;
+    transform: translateX(-6px);
+  }
+
+  :global(.js) .item:not([data-seen]) .cardX {
+    opacity: 0;
+    transform: translate(var(--card-shift), 26px) scale(0.985);
+    filter: blur(10px);
+  }
+
+  /* キーボードフォーカスが入った項目は、ビームの到達を待たずにカードを見せる(フォーカスリングが透明なカードの中に隠れないように) */
+  :global(.js) .item:focus-within .cardX {
+    opacity: 1;
+    transform: none;
+    filter: none;
+  }
+
+  :global(.js) .root:not([data-done]) .divider {
+    transform: scaleX(0);
+  }
+
+  :global(.js) .root:not([data-done]) .divider::before {
+    opacity: 0;
+  }
+
+  :global(.js) .root:not([data-done]) .footnote {
+    opacity: 0;
+    transform: translate(0, 14px);
+    filter: blur(6px);
+  }
+}
+
+/* ── キーフレーム ───────────────────────────── */
+@keyframes nodePop {
+  0% {
+    transform: scale(0.4);
+  }
+
+  45% {
+    transform: scale(1.75);
+  }
+
+  100% {
+    transform: scale(1);
+  }
+}
+
+@keyframes ringOut {
+  0% {
+    transform: scale(1);
+    opacity: 0.9;
+  }
+
+  100% {
+    transform: scale(5.5);
+    opacity: 0;
+  }
+}
+
+@keyframes halo {
+  0%,
+  100% {
+    opacity: 0.55;
+    transform: scale(1);
+  }
+
+  50% {
+    opacity: 1;
+    transform: scale(1.18);
+  }
+}
+
+@keyframes tipBreath {
+  0%,
+  100% {
+    opacity: 0.75;
+    transform: scale(1);
+  }
+
+  50% {
+    opacity: 1;
+    transform: scale(1.15);
+  }
+}
+
+@keyframes spark {
+  0% {
+    opacity: 0;
+    transform: translate3d(0, 0, 0) scale(1);
+  }
+
+  12% {
+    opacity: 1;
+  }
+
+  100% {
+    opacity: 0;
+    transform: translate3d(var(--sx, 20px), var(--sy, -30px), 0) scale(0.2);
+  }
+}
+
+@keyframes sweep {
+  0% {
+    opacity: 0;
+    transform: translateX(-100%);
+  }
+
+  15% {
+    opacity: 1;
+  }
+
+  100% {
+    opacity: 0;
+    transform: translateX(230%);
+  }
+}

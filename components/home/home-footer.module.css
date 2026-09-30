@@ -1,0 +1,100 @@
+/* ── フッター ─────────────────────────────────
+   巨大な社名のワードマーク。文字は下へ向かって闇に溶け、
+   光の線の高さで切り落とされる。「下線」の下にだけ、本物の線が引かれる。 */
+
+@property --wm-r {
+  syntax: "<length>";
+  initial-value: 1px;
+  inherits: true;
+}
+
+.wrap {
+  --wm-r: 1px;
+  /* em の基準。画面幅いっぱいに社名が収まる大きさ */
+  font-size: 17.6vw;
+  position: relative;
+  height: 0.7em;
+  margin-top: 3.5rem;
+  overflow: hidden;
+  cursor: default;
+  user-select: none;
+  -webkit-user-select: none;
+  transition: --wm-r 0.8s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.wordmark {
+  --mx: 50%;
+  --my: 50%;
+  margin: 0;
+  text-align: center;
+  white-space: nowrap;
+  font-family: var(--font-sans), var(--font-jp), "Hiragino Sans", "Hiragino Kaku Gothic ProN", sans-serif;
+  font-size: 1em;
+  font-weight: 900;
+  line-height: 1;
+  letter-spacing: -0.03em;
+  background-image:
+    radial-gradient(var(--wm-r) circle at var(--mx) var(--my), rgba(125, 216, 255, 0.95), rgba(0, 181, 255, 0.4) 50%, transparent 100%),
+    linear-gradient(100deg, transparent 44%, rgba(125, 216, 255, 0.75) 50%, transparent 56%),
+    linear-gradient(180deg, rgba(234, 240, 248, 0.27) 0%, rgba(234, 240, 248, 0.12) 40%, rgba(234, 240, 248, 0.03) 66%, transparent 100%);
+  background-size:
+    100% 100%,
+    300% 100%,
+    100% 100%;
+  background-position:
+    0 0,
+    90% 0,
+    0 0;
+  background-repeat: no-repeat;
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}
+
+/* 画面に入ったとき、光が一度だけ文字の上を走る */
+.wrap:global(.is-in) .wordmark {
+  animation: wordSweep 2.8s cubic-bezier(0.45, 0, 0.2, 1) 0.5s both;
+}
+
+/* 「下線」の下の線は、文字を切り落とす高さに引く */
+.wordmark .underlined::after {
+  bottom: auto;
+  top: 0.612em;
+  height: 0.028em;
+  box-shadow:
+    0 0 18px rgba(0, 181, 255, 0.85),
+    0 0 60px rgba(0, 181, 255, 0.5);
+}
+
+@keyframes wordSweep {
+  from {
+    background-position:
+      0 0,
+      90% 0,
+      0 0;
+  }
+
+  to {
+    background-position:
+      0 0,
+      10% 0,
+      0 0;
+  }
+}
+
+/* 大きな画面では、幅いっぱいを避けて少しだけ内側に収める */
+@media (min-width: 1600px) {
+  .wrap {
+    font-size: 17vw;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .wrap {
+    transition: none;
+  }
+
+  .wrap:global(.is-in) .wordmark {
+    animation: none;
+  }
+}

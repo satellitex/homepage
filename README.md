@@ -7,8 +7,10 @@
 ## 技術スタック
 
 - [Next.js 15](https://nextjs.org/) (App Router) + React 19 + TypeScript — `output: "export"` による静的サイト
-- [Tailwind CSS 3](https://tailwindcss.com/) — 社名「下線」に由来する下線モチーフのデザインシステム（[app/globals.css](app/globals.css)）
-- [shadcn/ui](https://ui.shadcn.com/) ベースの Button コンポーネント（[components/ui/button.tsx](components/ui/button.tsx)）
+- [Tailwind CSS 3](https://tailwindcss.com/) — 社名「下線」を暗闇を走る「一本の光の線」として表現するダークテーマのデザインシステム（[app/globals.css](app/globals.css)）
+- [Motion](https://motion.dev/)（`motion/react`）— スクロール連動・ヘッダーなどのアニメーション
+- [Lenis](https://lenis.darkroom.engineering/) — 慣性スムーススクロール（[components/fx/smooth-scroll.tsx](components/fx/smooth-scroll.tsx)）
+- WebGL — ヒーローの光の地平線（[components/fx/hero-canvas.tsx](components/fx/hero-canvas.tsx)）
 - [lucide-react](https://lucide.dev/) アイコン
 - お問い合わせフォームは [FormSubmit](https://formsubmit.co/) 経由でメール送信（サーバ不要）
 
@@ -18,6 +20,12 @@
 pnpm install
 pnpm dev        # http://localhost:3000
 ```
+
+### アニメーションと配慮
+
+- 演出はすべて `prefers-reduced-motion: reduce`（OS の「視差効果を減らす」など）で止まり、最終状態で表示されます。
+- アニメーション前の非表示状態は `html.js` 配下だけで効くため、JavaScript が無効でも本文はすべて読めます。
+- 初回訪問時のイントロ演出は、同じセッション内では再生されません（`sessionStorage` の `intro-seen`）。
 
 ## ビルドとプレビュー
 
@@ -37,7 +45,8 @@ GitHub Pages のプロジェクトページ配下（`/homepage`）で公開す�
 ```
 app/            ページ (App Router)。トップ・お問い合わせ・プライバシーポリシー・利用規約など
 components/     共有コンポーネント (ヘッダー・フッター・お問い合わせフォームなど)
-components/ui/  shadcn/ui ベースの UI プリミティブ
+components/home/ トップページの各セクション (ヒーロー・事業内容・実績など)
+components/fx/  演出の部品 (文字分割・スポットライト・スムーススクロール・WebGL など)
 lib/site.ts     会社情報・サイトURL (会社情報の変更はここ)
 lib/content.ts  掲載コンテンツ (事業内容・実績・FAQ などの文言はここ)
 lib/structured-data.ts  SEO 用の JSON-LD 定義

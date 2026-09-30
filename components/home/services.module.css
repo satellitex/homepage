@@ -1,0 +1,1360 @@
+/* ───────────────────────────────────────────
+   01 SERVICES — ベントーカードと、カードごとに動く挿絵
+   ・挿絵の登場とループは舞台(.stage)に .is-in が付いてから始まる
+   ・画面外のループは LoopGate が舞台ごと止める(data-loop-scope)
+   ・JS 無し / 動きを減らす設定では、SVG に書いた完成図がそのまま静止画になる
+   ─────────────────────────────────────────── */
+
+/* ── カード(角丸は .spotlight の --spot-radius 既定値 1.5rem) ── */
+.stage {
+  --expo: cubic-bezier(0.16, 1, 0.3, 1);
+  --quint: cubic-bezier(0.22, 1, 0.36, 1);
+  --io: cubic-bezier(0.65, 0, 0.35, 1);
+  position: relative;
+  flex: 1 0 auto;
+  min-height: 14rem;
+  overflow: hidden;
+  border-radius: calc(var(--spot-radius, 1.5rem) - 1px) calc(var(--spot-radius, 1.5rem) - 1px) 0 0;
+  -webkit-mask-image: linear-gradient(to bottom, #000 74%, transparent 100%);
+  mask-image: linear-gradient(to bottom, #000 74%, transparent 100%);
+}
+
+@media (min-width: 640px) {
+  .stage {
+    min-height: 15rem;
+  }
+}
+
+@media (min-width: 1024px) {
+  .stage {
+    min-height: 16rem;
+  }
+}
+
+/* 挿絵の下に敷く点の方眼 */
+.stage::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background-image: radial-gradient(rgba(160, 190, 240, 0.2) 1px, transparent 1.3px);
+  background-size: 20px 20px;
+  background-position: center;
+  -webkit-mask-image: radial-gradient(ellipse 70% 75% at 50% 45%, #000 15%, transparent 78%);
+  mask-image: radial-gradient(ellipse 70% 75% at 50% 45%, #000 15%, transparent 78%);
+  opacity: 0.55;
+  transition: opacity 0.6s ease;
+}
+
+.card:hover .stage::before {
+  opacity: 0.95;
+}
+
+.art {
+  position: absolute;
+  inset: 0;
+  display: block;
+  width: 100%;
+  height: 100%;
+  transition: filter 0.7s ease;
+}
+
+.card:hover .art {
+  filter: brightness(1.12) saturate(1.04);
+}
+
+/* 右上の大きな番号(装飾) */
+.index {
+  position: absolute;
+  top: 0.85rem;
+  right: 1.25rem;
+  z-index: 1;
+  font-family: var(--font-mono), monospace;
+  font-size: 0.68rem;
+  letter-spacing: 0.3em;
+  color: var(--fg-dim);
+  transition: color 0.4s ease;
+}
+
+/* 番号は本文の文字として重複させないよう、疑似要素で描く */
+.index::before,
+.bigNo::before {
+  content: attr(data-no);
+}
+
+.card:hover .index {
+  color: var(--beam-sky);
+}
+
+.bigNo {
+  position: absolute;
+  right: -0.35rem;
+  bottom: -2.4rem;
+  font-size: 9.5rem;
+  font-weight: 800;
+  line-height: 1;
+  letter-spacing: -0.06em;
+  color: transparent;
+  -webkit-text-stroke: 1px rgba(160, 190, 240, 0.075);
+  pointer-events: none;
+  user-select: none;
+  transition: -webkit-text-stroke-color 0.6s ease;
+}
+
+.card:hover .bigNo {
+  -webkit-text-stroke-color: rgba(0, 181, 255, 0.22);
+}
+
+/* ── 共通の下地 ─────────────────────────── */
+.cNode,
+.cTwinkle,
+.cCore,
+.cMilestoneFlash,
+.bEnter,
+.bPing,
+.fGlow,
+.fPing,
+.sTileGlow {
+  transform-box: fill-box;
+  transform-origin: center;
+}
+
+/* ───────────────── 01 IT CONSULTING ───────────────── */
+.cBeam {
+  transform-box: fill-box;
+  transform-origin: left center;
+}
+
+.cPulse,
+.cPulseHalo {
+  stroke-dasharray: 7 100;
+  stroke-dashoffset: 8;
+}
+
+.cPulseHalo {
+  opacity: 0.35;
+}
+
+.cPulseAlt {
+  opacity: 0;
+  transition: opacity 0.6s ease;
+}
+
+.card:hover .cPulseAlt {
+  opacity: 1;
+}
+
+.cBeamPulse,
+.cBeamPulseHalo {
+  stroke-dasharray: 9 100;
+  stroke-dashoffset: 10;
+}
+
+.cBeamPulseHalo {
+  opacity: 0.45;
+}
+
+.cTip {
+  opacity: 0;
+}
+
+.cMilestoneFlash {
+  opacity: 0.35;
+}
+
+.cGate {
+  opacity: 0.7;
+}
+
+/* ───────────────── 02 BLOCKCHAIN ───────────────── */
+.bFlash,
+.bPending,
+.bPing,
+.bWave {
+  opacity: 0;
+}
+
+/* ───────────────── 03 FDE ───────────────── */
+.fLine {
+  transform-box: fill-box;
+  transform-origin: left center;
+}
+
+.fBeacon {
+  transform-box: fill-box;
+  transform-origin: center bottom;
+  opacity: 0.3;
+}
+
+.fPill,
+.fPing {
+  opacity: 0;
+}
+
+.fGlow {
+  opacity: 0.6;
+}
+
+.fPulse,
+.fPulseHalo {
+  stroke-dasharray: 10 100;
+  stroke-dashoffset: 11;
+}
+
+.fPulseHalo {
+  opacity: 0.4;
+}
+
+/* ───────────────── 04 SYSTEM DESIGN ───────────────── */
+.sLayer,
+.sColumn {
+  transition: transform 0.9s var(--expo);
+}
+
+.sColumn {
+  transform-box: view-box;
+}
+
+/* ホバーで層が上下に開く(分解図) */
+@media (prefers-reduced-motion: no-preference) {
+  .card:hover .sLayerTop {
+    transform: translateY(-9px);
+  }
+
+  .card:hover .sLayerBot {
+    transform: translateY(9px);
+  }
+
+  .card:hover .sSegUpper .sColumn,
+  .card:hover .sSegLower .sColumn {
+    transform: scaleY(1.1957);
+  }
+}
+
+.sPacket {
+  opacity: 0;
+}
+
+.sSatPulse {
+  stroke-dasharray: 8 100;
+  stroke-dashoffset: 9;
+}
+
+.sTileGlow {
+  opacity: 0.4;
+}
+
+/* ───────────────── 動き(動きを減らす設定では一切適用しない) ───────────────── */
+@media (prefers-reduced-motion: no-preference) {
+  /* 登場前の状態(JS が有効なときだけ) */
+  :global(.js) .art {
+    opacity: 0;
+    transition:
+      opacity 1.2s var(--expo),
+      filter 0.7s ease;
+  }
+
+  :global(.js) .stage:global(.is-in) .art {
+    opacity: 1;
+  }
+
+  /* ── 01 IT CONSULTING ── */
+  :global(.js) .cNode {
+    opacity: 0;
+    transform: scale(0.2);
+  }
+
+  :global(.js) .cMesh,
+  :global(.js) .cGate {
+    opacity: 0;
+  }
+
+  :global(.js) .cPath {
+    stroke-dasharray: 100;
+    stroke-dashoffset: 100;
+  }
+
+  :global(.js) .cBeam {
+    transform: scaleX(0);
+  }
+
+  :global(.js) .cCore {
+    opacity: 0;
+    transform: scale(0.3);
+  }
+
+  .stage:global(.is-in) .cNode {
+    animation: svcPop 0.9s var(--expo) calc(0.1s + var(--d, 0ms)) both;
+  }
+
+  .stage:global(.is-in) .cTwinkle {
+    animation: svcTwinkle 3.8s ease-in-out calc(1.6s + var(--t, 0ms)) infinite;
+  }
+
+  .stage:global(.is-in) .cNode.cTwinkle {
+    animation:
+      svcPop 0.9s var(--expo) calc(0.1s + var(--d, 0ms)) both,
+      svcTwinkle 3.8s ease-in-out calc(1.6s + var(--t, 0ms)) infinite;
+  }
+
+  .stage:global(.is-in) .cMesh {
+    animation: svcFadeTo 1.4s ease 0.2s both;
+    --to: 1;
+  }
+
+  .stage:global(.is-in) .cPath {
+    animation: svcDraw 1.3s var(--quint) calc(0.35s + var(--d, 0ms)) both;
+  }
+
+  .stage:global(.is-in) .cCore {
+    animation:
+      svcCoreIn 0.9s var(--expo) 1.1s both,
+      svcCoreFlash 3.2s ease-out 4.1s infinite;
+  }
+
+  .stage:global(.is-in) .cGate {
+    animation: svcFadeTo 1.2s ease 1.1s both;
+    --to: 0.7;
+  }
+
+  .stage:global(.is-in) .cBeam {
+    animation: svcScaleX 1.4s var(--expo) 1.2s both;
+  }
+
+  .stage:global(.is-in) .cTip {
+    animation: svcTipMove 1.4s var(--expo) 1.2s both;
+  }
+
+  .stage:global(.is-in) .cTipFade {
+    animation: svcTipFade 1.4s linear 1.2s both;
+  }
+
+  .stage:global(.is-in) .cPulse,
+  .stage:global(.is-in) .cPulseHalo {
+    animation: svcConverge 3.2s cubic-bezier(0.55, 0, 0.85, 0.35) calc(2.4s + var(--d, 0ms)) infinite both;
+  }
+
+  .stage:global(.is-in) .cPulseAlt {
+    animation-delay: calc(4s + var(--d, 0ms));
+  }
+
+  .stage:global(.is-in) .cBeamPulse,
+  .stage:global(.is-in) .cBeamPulseHalo {
+    animation: svcBeamRun 3.2s linear 4.4s infinite both;
+  }
+
+  .stage:global(.is-in) .cMilestoneFlash {
+    animation: svcMilestone 3.2s ease-out calc(4.4s + var(--d, 0ms)) infinite both;
+  }
+
+  /* ── 02 BLOCKCHAIN ── */
+  :global(.js) .bEnter {
+    opacity: 0;
+    transform: translateY(12px) scale(0.92);
+  }
+
+  :global(.js) .bLine {
+    stroke-dasharray: 100;
+    stroke-dashoffset: 100;
+  }
+
+  :global(.js) .bFloor {
+    opacity: 0;
+  }
+
+  .stage:global(.is-in) .bEnter {
+    animation: svcBlockIn 0.9s var(--expo) calc(0.25s + var(--d, 0ms)) both;
+  }
+
+  .stage:global(.is-in) .bLine {
+    animation: svcDraw 1.6s var(--quint) 0.05s both;
+  }
+
+  .stage:global(.is-in) .bFloor {
+    animation: svcFadeTo 1.2s ease 0.6s both;
+    --to: 1;
+  }
+
+  .stage:global(.is-in) .bChain {
+    animation: svcChainShift 6s var(--io) 1.3s infinite both;
+  }
+
+  .stage:global(.is-in) .bFirst {
+    animation: svcBlockLeave 6s ease 1.3s infinite both;
+  }
+
+  .stage:global(.is-in) .bNew {
+    animation: svcBlockArrive 6s var(--expo) 1.3s infinite both;
+  }
+
+  .stage:global(.is-in) .bPending {
+    animation: svcPending 6s ease 1.3s infinite both;
+  }
+
+  .stage:global(.is-in) .bHashNew {
+    animation: svcHashFill 6s ease 1.3s infinite both;
+  }
+
+  .stage:global(.is-in) .bWave {
+    animation: svcWave 6s linear 1.3s infinite both;
+  }
+
+  .stage:global(.is-in) .bFlash {
+    animation: svcBlockFlash 6s ease-out calc(2.31s + var(--d, 0ms)) infinite both;
+  }
+
+  .stage:global(.is-in) .bPing {
+    animation: svcBlockPing 6s linear 1.3s infinite both;
+  }
+
+  /* ── 03 FDE ── */
+  :global(.js) .fWin {
+    opacity: 0;
+    transform: translateY(14px);
+  }
+
+  :global(.js) .fTarget {
+    opacity: 0;
+  }
+
+  .stage:global(.is-in) .fWin {
+    animation: svcRise 1.1s var(--expo) 0.1s both;
+  }
+
+  .stage:global(.is-in) .fTarget {
+    animation: svcFadeTo 1s ease 0.55s both;
+    --to: 1;
+  }
+
+  .stage:global(.is-in) .fRoute {
+    animation: svcRouteFlow 2.4s linear infinite;
+  }
+
+  .stage:global(.is-in) .fCode {
+    animation: svcCodeFade 8s ease 0.9s infinite both;
+  }
+
+  .stage:global(.is-in) .fType0 {
+    animation: svcType0 8s linear 0.9s infinite both;
+  }
+
+  .stage:global(.is-in) .fType1 {
+    animation: svcType1 8s linear 0.9s infinite both;
+  }
+
+  .stage:global(.is-in) .fType2 {
+    animation: svcType2 8s linear 0.9s infinite both;
+  }
+
+  .stage:global(.is-in) .fType3 {
+    animation: svcType3 8s linear 0.9s infinite both;
+  }
+
+  .stage:global(.is-in) .fType4 {
+    animation: svcType4 8s linear 0.9s infinite both;
+  }
+
+  .stage:global(.is-in) .fType5 {
+    animation: svcType5 8s linear 0.9s infinite both;
+  }
+
+  .stage:global(.is-in) .fCaret {
+    animation: svcCaret 8s linear 0.9s infinite both;
+  }
+
+  .stage:global(.is-in) .fActive {
+    animation: svcActive 8s linear 0.9s infinite both;
+  }
+
+  .stage:global(.is-in) .fBlink {
+    animation: svcBlink 1s steps(1, end) infinite;
+  }
+
+  .stage:global(.is-in) .fPill {
+    animation: svcPill 8s ease 0.9s infinite both;
+  }
+
+  .stage:global(.is-in) .fPulse,
+  .stage:global(.is-in) .fPulseHalo {
+    animation: svcDeployRun 8s linear 0.9s infinite both;
+  }
+
+  .stage:global(.is-in) .fGlow {
+    animation: svcTargetGlow 8s ease 0.9s infinite both;
+  }
+
+  .stage:global(.is-in) .fPing {
+    animation: svcTargetPing 8s linear 0.9s infinite both;
+  }
+
+  .stage:global(.is-in) .fPing2 {
+    animation-delay: 1.35s;
+  }
+
+  .stage:global(.is-in) .fBeacon {
+    animation: svcBeacon 8s ease 0.9s infinite both;
+  }
+
+  .stage:global(.is-in) .fLive {
+    animation: svcLive 8s ease 0.9s infinite both;
+  }
+
+  /* ── 04 SYSTEM DESIGN ── */
+  :global(.js) .sDrop {
+    opacity: 0;
+    transform: translateY(-26px);
+  }
+
+  :global(.js) .sSeg,
+  :global(.js) .sSat,
+  :global(.js) .sFloor {
+    opacity: 0;
+  }
+
+  .stage:global(.is-in) .sDrop {
+    animation: svcDrop 1.2s var(--expo) calc(0.15s + var(--d, 0ms)) both;
+  }
+
+  .stage:global(.is-in) .sFloor {
+    animation: svcFadeTo 1.6s ease 0.1s both;
+    --to: 1;
+  }
+
+  .stage:global(.is-in) .sSeg {
+    animation: svcFadeTo 1s ease 1s both;
+    --to: 1;
+  }
+
+  .stage:global(.is-in) .sSat {
+    animation: svcFadeTo 1.2s ease 1.2s both;
+    --to: 1;
+  }
+
+  .stage:global(.is-in) .sBob {
+    animation: svcBob 5.1s ease-in-out var(--bob, 0s) infinite;
+  }
+
+  .stage:global(.is-in) .sPacketUp {
+    animation: svcPacketUp var(--dur, 2.5s) var(--io) calc(1.6s + var(--d, 0ms)) infinite both;
+  }
+
+  .stage:global(.is-in) .sPacketDown {
+    animation: svcPacketDown var(--dur, 2.5s) var(--io) calc(1.6s + var(--d, 0ms)) infinite both;
+  }
+
+  .stage:global(.is-in) .sSatPulse {
+    animation: svcSatRun 3.4s var(--io) calc(2s + var(--d, 0ms)) infinite both;
+  }
+
+  .stage:global(.is-in) .sTileGlow {
+    animation: svcTileGlow 4.2s ease-in-out 1.8s infinite;
+  }
+}
+
+/* ───────────────── キーフレーム ───────────────── */
+@keyframes svcPop {
+  from {
+    opacity: 0;
+    transform: scale(0.2);
+  }
+
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+@keyframes svcTwinkle {
+  0%,
+  100% {
+    opacity: 1;
+  }
+
+  50% {
+    opacity: 0.35;
+  }
+}
+
+@keyframes svcFadeTo {
+  from {
+    opacity: 0;
+  }
+
+  to {
+    opacity: var(--to, 1);
+  }
+}
+
+@keyframes svcDraw {
+  from {
+    stroke-dasharray: 100;
+    stroke-dashoffset: 100;
+  }
+
+  to {
+    stroke-dasharray: 100;
+    stroke-dashoffset: 0;
+  }
+}
+
+@keyframes svcScaleX {
+  from {
+    transform: scaleX(0);
+  }
+
+  to {
+    transform: scaleX(1);
+  }
+}
+
+@keyframes svcTipMove {
+  from {
+    transform: translateX(0);
+  }
+
+  to {
+    transform: translateX(442px);
+  }
+}
+
+@keyframes svcTipFade {
+  0% {
+    opacity: 1;
+  }
+
+  70% {
+    opacity: 1;
+  }
+
+  100% {
+    opacity: 0;
+  }
+}
+
+@keyframes svcCoreIn {
+  0% {
+    opacity: 0;
+    transform: scale(0.3);
+  }
+
+  40% {
+    opacity: 1;
+    transform: scale(1.4);
+  }
+
+  100% {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+@keyframes svcCoreFlash {
+  0%,
+  100% {
+    transform: none;
+  }
+
+  8% {
+    transform: scale(1.35);
+  }
+
+  40% {
+    transform: none;
+  }
+}
+
+@keyframes svcConverge {
+  0% {
+    stroke-dashoffset: 8;
+  }
+
+  55%,
+  100% {
+    stroke-dashoffset: -100;
+  }
+}
+
+@keyframes svcBeamRun {
+  0% {
+    stroke-dashoffset: 10;
+  }
+
+  40%,
+  100% {
+    stroke-dashoffset: -100;
+  }
+}
+
+@keyframes svcMilestone {
+  0%,
+  100% {
+    opacity: 0.35;
+    transform: none;
+  }
+
+  5% {
+    opacity: 1;
+    transform: scale(1.8);
+  }
+
+  30% {
+    opacity: 0.35;
+    transform: none;
+  }
+}
+
+@keyframes svcBlockIn {
+  from {
+    opacity: 0;
+    transform: translateY(12px) scale(0.92);
+  }
+
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+/* 鎖を1ブロック分(54)左へ送る。最後に元の位置へ戻っても見た目は同じになる */
+@keyframes svcChainShift {
+  0%,
+  64% {
+    transform: translateX(0);
+  }
+
+  80%,
+  100% {
+    transform: translateX(-54px);
+  }
+}
+
+@keyframes svcBlockLeave {
+  0%,
+  63% {
+    opacity: 1;
+  }
+
+  74%,
+  100% {
+    opacity: 0;
+  }
+}
+
+@keyframes svcBlockArrive {
+  0% {
+    opacity: 0;
+    transform: translateX(22px);
+  }
+
+  10%,
+  100% {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+@keyframes svcPending {
+  0%,
+  40% {
+    opacity: 0.9;
+  }
+
+  47%,
+  100% {
+    opacity: 0;
+  }
+}
+
+@keyframes svcHashFill {
+  0%,
+  38% {
+    opacity: 0.25;
+  }
+
+  44%,
+  100% {
+    opacity: 1;
+  }
+}
+
+/* 波は x=35 から 385 へ(180/s)。ブロック k の中心(65 + 54k)を 1.0 + 0.3k 秒後に通る */
+@keyframes svcWave {
+  0%,
+  14% {
+    opacity: 0;
+    transform: translateX(35px);
+  }
+
+  16% {
+    opacity: 1;
+  }
+
+  44% {
+    opacity: 1;
+  }
+
+  46.4%,
+  100% {
+    opacity: 0;
+    transform: translateX(385px);
+  }
+}
+
+@keyframes svcBlockFlash {
+  0% {
+    opacity: 0;
+  }
+
+  3% {
+    opacity: 1;
+  }
+
+  18%,
+  100% {
+    opacity: 0;
+  }
+}
+
+@keyframes svcBlockPing {
+  0%,
+  41.5% {
+    opacity: 0;
+    transform: scale(1);
+  }
+
+  42% {
+    opacity: 0.9;
+    transform: scale(1);
+    animation-timing-function: cubic-bezier(0.16, 1, 0.3, 1);
+  }
+
+  62%,
+  100% {
+    opacity: 0;
+    transform: scale(1.9);
+  }
+}
+
+@keyframes svcRise {
+  from {
+    opacity: 0;
+    transform: translateY(14px);
+  }
+
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+@keyframes svcRouteFlow {
+  from {
+    stroke-dashoffset: 0;
+  }
+
+  to {
+    stroke-dashoffset: -11;
+  }
+}
+
+@keyframes svcCodeFade {
+  0%,
+  87.5% {
+    opacity: 1;
+  }
+
+  93%,
+  99% {
+    opacity: 0;
+  }
+
+  100% {
+    opacity: 1;
+  }
+}
+
+@keyframes svcBlink {
+  0% {
+    opacity: 1;
+  }
+
+  50% {
+    opacity: 0;
+  }
+}
+
+@keyframes svcPill {
+  0%,
+  43% {
+    opacity: 0;
+  }
+
+  46% {
+    opacity: 1;
+  }
+
+  70% {
+    opacity: 0.45;
+  }
+
+  80%,
+  100% {
+    opacity: 0;
+  }
+}
+
+@keyframes svcDeployRun {
+  0%,
+  45% {
+    stroke-dashoffset: 11;
+    animation-timing-function: cubic-bezier(0.65, 0, 0.35, 1);
+  }
+
+  55%,
+  100% {
+    stroke-dashoffset: -100;
+  }
+}
+
+@keyframes svcTargetGlow {
+  0%,
+  54% {
+    opacity: 0.6;
+    transform: none;
+  }
+
+  57% {
+    opacity: 1;
+    transform: scale(1.45);
+  }
+
+  78%,
+  100% {
+    opacity: 0.6;
+    transform: none;
+  }
+}
+
+@keyframes svcTargetPing {
+  0%,
+  55% {
+    opacity: 0;
+    transform: scale(1);
+  }
+
+  55.5% {
+    opacity: 0.95;
+    transform: scale(1);
+    animation-timing-function: cubic-bezier(0.16, 1, 0.3, 1);
+  }
+
+  76%,
+  100% {
+    opacity: 0;
+    transform: scale(3.6);
+  }
+}
+
+@keyframes svcBeacon {
+  0%,
+  55% {
+    opacity: 0.3;
+    transform: scaleY(1);
+  }
+
+  55.5% {
+    opacity: 0;
+    transform: scaleY(0);
+    animation-timing-function: cubic-bezier(0.16, 1, 0.3, 1);
+  }
+
+  60% {
+    opacity: 1;
+    transform: scaleY(1);
+  }
+
+  84%,
+  100% {
+    opacity: 0.3;
+    transform: scaleY(1);
+  }
+}
+
+@keyframes svcLive {
+  0%,
+  55% {
+    opacity: 0;
+  }
+
+  58%,
+  86% {
+    opacity: 1;
+  }
+
+  92%,
+  100% {
+    opacity: 0;
+  }
+}
+
+@keyframes svcDrop {
+  from {
+    opacity: 0;
+    transform: translateY(-26px);
+  }
+
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+@keyframes svcBob {
+  0%,
+  100% {
+    transform: translateY(0);
+  }
+
+  50% {
+    transform: translateY(-4px);
+  }
+}
+
+@keyframes svcPacketUp {
+  0% {
+    opacity: 0;
+    transform: translateY(0);
+  }
+
+  12% {
+    opacity: 1;
+  }
+
+  80% {
+    opacity: 1;
+  }
+
+  92%,
+  100% {
+    opacity: 0;
+    transform: translateY(-46px);
+  }
+}
+
+@keyframes svcPacketDown {
+  0% {
+    opacity: 0;
+    transform: translateY(0);
+  }
+
+  12% {
+    opacity: 1;
+  }
+
+  80% {
+    opacity: 1;
+  }
+
+  92%,
+  100% {
+    opacity: 0;
+    transform: translateY(46px);
+  }
+}
+
+@keyframes svcSatRun {
+  0% {
+    stroke-dashoffset: 9;
+  }
+
+  50%,
+  100% {
+    stroke-dashoffset: -100;
+  }
+}
+
+@keyframes svcTileGlow {
+  0%,
+  100% {
+    opacity: 0.4;
+  }
+
+  50% {
+    opacity: 1;
+  }
+}
+
+/* 03 FDE の打鍵(services-illustrations.tsx の codeLines の座標から生成) */
+@keyframes svcType0 {
+  0% {
+    transform: scaleX(0);
+  }
+
+  4.375% {
+    transform: scaleX(0);
+    animation-timing-function: steps(8, start);
+  }
+
+  9.125%,
+  95% {
+    transform: scaleX(1);
+  }
+
+  96%,
+  100% {
+    transform: scaleX(0);
+  }
+}
+
+@keyframes svcType1 {
+  0% {
+    transform: scaleX(0);
+  }
+
+  10.625% {
+    transform: scaleX(0);
+    animation-timing-function: steps(9, start);
+  }
+
+  15.375%,
+  95% {
+    transform: scaleX(1);
+  }
+
+  96%,
+  100% {
+    transform: scaleX(0);
+  }
+}
+
+@keyframes svcType2 {
+  0% {
+    transform: scaleX(0);
+  }
+
+  16.875% {
+    transform: scaleX(0);
+    animation-timing-function: steps(9, start);
+  }
+
+  21.625%,
+  95% {
+    transform: scaleX(1);
+  }
+
+  96%,
+  100% {
+    transform: scaleX(0);
+  }
+}
+
+@keyframes svcType3 {
+  0% {
+    transform: scaleX(0);
+  }
+
+  23.125% {
+    transform: scaleX(0);
+    animation-timing-function: steps(8, start);
+  }
+
+  27.875%,
+  95% {
+    transform: scaleX(1);
+  }
+
+  96%,
+  100% {
+    transform: scaleX(0);
+  }
+}
+
+@keyframes svcType4 {
+  0% {
+    transform: scaleX(0);
+  }
+
+  29.375% {
+    transform: scaleX(0);
+    animation-timing-function: steps(7, start);
+  }
+
+  34.125%,
+  95% {
+    transform: scaleX(1);
+  }
+
+  96%,
+  100% {
+    transform: scaleX(0);
+  }
+}
+
+@keyframes svcType5 {
+  0% {
+    transform: scaleX(0);
+  }
+
+  35.625% {
+    transform: scaleX(0);
+    animation-timing-function: steps(2, start);
+  }
+
+  40.375%,
+  95% {
+    transform: scaleX(1);
+  }
+
+  96%,
+  100% {
+    transform: scaleX(0);
+  }
+}
+
+@keyframes svcCaret {
+  0% {
+    transform: translate(88px, 86px);
+  }
+
+  4.375% {
+    transform: translate(88px, 86px);
+    animation-timing-function: steps(8, start);
+  }
+
+  9.125% {
+    transform: translate(162px, 86px);
+  }
+
+  10.615% {
+    transform: translate(162px, 86px);
+  }
+
+  10.625% {
+    transform: translate(100px, 102px);
+    animation-timing-function: steps(9, start);
+  }
+
+  15.375% {
+    transform: translate(182px, 102px);
+  }
+
+  16.865% {
+    transform: translate(182px, 102px);
+  }
+
+  16.875% {
+    transform: translate(112px, 118px);
+    animation-timing-function: steps(9, start);
+  }
+
+  21.625% {
+    transform: translate(193px, 118px);
+  }
+
+  23.115% {
+    transform: translate(193px, 118px);
+  }
+
+  23.125% {
+    transform: translate(112px, 134px);
+    animation-timing-function: steps(8, start);
+  }
+
+  27.875% {
+    transform: translate(182px, 134px);
+  }
+
+  29.365% {
+    transform: translate(182px, 134px);
+  }
+
+  29.375% {
+    transform: translate(100px, 150px);
+    animation-timing-function: steps(7, start);
+  }
+
+  34.125% {
+    transform: translate(163px, 150px);
+  }
+
+  35.615% {
+    transform: translate(163px, 150px);
+  }
+
+  35.625% {
+    transform: translate(88px, 166px);
+    animation-timing-function: steps(2, start);
+  }
+
+  40.375% {
+    transform: translate(100px, 166px);
+  }
+
+  95% {
+    transform: translate(100px, 166px);
+  }
+
+  96%,
+  100% {
+    transform: translate(88px, 86px);
+  }
+}
+
+@keyframes svcActive {
+  0% {
+    transform: translate(0, 86px);
+  }
+
+  4.375% {
+    transform: translate(0, 86px);
+  }
+
+  10.615% {
+    transform: translate(0, 86px);
+  }
+
+  10.625% {
+    transform: translate(0, 102px);
+  }
+
+  16.865% {
+    transform: translate(0, 102px);
+  }
+
+  16.875% {
+    transform: translate(0, 118px);
+  }
+
+  23.115% {
+    transform: translate(0, 118px);
+  }
+
+  23.125% {
+    transform: translate(0, 134px);
+  }
+
+  29.365% {
+    transform: translate(0, 134px);
+  }
+
+  29.375% {
+    transform: translate(0, 150px);
+  }
+
+  35.615% {
+    transform: translate(0, 150px);
+  }
+
+  35.625% {
+    transform: translate(0, 166px);
+  }
+
+  95% {
+    transform: translate(0, 166px);
+  }
+
+  96%,
+  100% {
+    transform: translate(0, 86px);
+  }
+}
+

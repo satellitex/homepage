@@ -3,55 +3,42 @@ import type { Config } from "tailwindcss"
 const config: Config = {
   content: ["./app/**/*.{ts,tsx}", "./components/**/*.{ts,tsx}"],
   theme: {
+    container: {
+      center: true,
+      padding: { DEFAULT: "1.25rem", sm: "1.5rem", lg: "2rem" },
+      screens: { sm: "640px", md: "768px", lg: "1024px", xl: "1200px", "2xl": "1280px" },
+    },
     extend: {
+      // 「光の線」デザインのトークン(値の定義は app/globals.css の :root)
       colors: {
-        background: "hsl(var(--background))",
-        foreground: "hsl(var(--foreground))",
-        card: {
-          DEFAULT: "hsl(var(--card))",
-          foreground: "hsl(var(--card-foreground))",
+        bg: "var(--bg)",
+        hairline: {
+          DEFAULT: "var(--hairline)",
+          strong: "var(--hairline-strong)",
         },
-        popover: {
-          DEFAULT: "hsl(var(--popover))",
-          foreground: "hsl(var(--popover-foreground))",
+        fg: {
+          DEFAULT: "var(--fg)",
+          soft: "var(--fg-soft)",
+          muted: "var(--fg-muted)",
+          dim: "var(--fg-dim)",
         },
-        primary: {
-          DEFAULT: "hsl(var(--primary))",
-          foreground: "hsl(var(--primary-foreground))",
-        },
-        secondary: {
-          DEFAULT: "hsl(var(--secondary))",
-          foreground: "hsl(var(--secondary-foreground))",
-        },
-        muted: {
-          DEFAULT: "hsl(var(--muted))",
-          foreground: "hsl(var(--muted-foreground))",
-        },
-        accent: {
-          DEFAULT: "hsl(var(--accent))",
-          foreground: "hsl(var(--accent-foreground))",
-        },
-        destructive: {
-          DEFAULT: "hsl(var(--destructive))",
-          foreground: "hsl(var(--destructive-foreground))",
-        },
-        border: "hsl(var(--border))",
-        input: "hsl(var(--input))",
-        ring: "hsl(var(--ring))",
-        // ブランドカラー(値の定義は app/globals.css の :root)
-        ink: {
-          DEFAULT: "var(--ink)",
-          soft: "var(--ink-soft)",
-        },
-        line: {
-          azure: "var(--line-azure)",
-          blue: "var(--line-blue)",
+        beam: {
+          azure: "var(--beam-azure)",
+          sky: "var(--beam-sky)",
+          indigo: "var(--beam-indigo)",
         },
       },
-      borderRadius: {
-        lg: "var(--radius)",
-        md: "calc(var(--radius) - 2px)",
-        sm: "calc(var(--radius) - 4px)",
+      backgroundImage: {
+        // bg-beam: ブランドの光の線のグラデーション
+        beam: "var(--beam-gradient)",
+      },
+      fontFamily: {
+        sans: ["var(--font-sans)", "var(--font-jp)", "Hiragino Sans", "Hiragino Kaku Gothic ProN", "sans-serif"],
+        mono: ["var(--font-mono)", "var(--font-jp)", "SFMono-Regular", "Menlo", "monospace"],
+      },
+      transitionTimingFunction: {
+        "out-expo": "cubic-bezier(0.16, 1, 0.3, 1)",
+        "out-quint": "cubic-bezier(0.22, 1, 0.36, 1)",
       },
     },
   },

@@ -1,5 +1,5 @@
 import type { Metadata } from "next"
-import { SubpageShell } from "@/components/subpage-shell"
+import { LegalPanel, SubpageShell } from "@/components/subpage-shell"
 import { company } from "@/lib/site"
 
 const pageTitle = "プライバシーポリシー | PUBLIC下線合同会社"
@@ -30,7 +30,7 @@ export const metadata: Metadata = {
 export default function PrivacyPage() {
   return (
     <SubpageShell label="PRIVACY POLICY" title="プライバシーポリシー">
-      <div className="mt-10 space-y-6 text-sm leading-relaxed text-muted-foreground sm:text-base">
+      <LegalPanel>
         <p>
           {company.name}は、お問い合わせ時に取得した氏名・連絡先・ご相談内容を、
           業務連絡および支援提案の目的で利用します。法令に基づく場合を除き、本人の同意なく第三者へ提供しません。
@@ -41,12 +41,12 @@ export default function PrivacyPage() {
         </p>
         <p>
           個人情報の開示・訂正・削除のご相談は、
-          <a href={`mailto:${company.email}`} className="nav-underline font-medium text-line-blue">
+          <a href={`mailto:${company.email}`} className="nav-underline font-medium text-beam-sky [overflow-wrap:anywhere]">
             {company.email}
           </a>
           までご連絡ください。
         </p>
-      </div>
+      </LegalPanel>
     </SubpageShell>
   )
 }

@@ -39,11 +39,11 @@ export const metadata: Metadata = {
 
 export default function ContactPage() {
   return (
-    <SubpageShell label="CONTACT" title="お問い合わせ" className="max-w-5xl">
-      <p className="mt-6 max-w-2xl text-sm leading-relaxed text-muted-foreground sm:text-base">
+    <SubpageShell label="CONTACT" title="お問い合わせ" width="wide">
+      <p className="max-w-2xl text-balance text-[0.95rem] [word-break:auto-phrase] leading-[1.9] text-fg-muted sm:text-lg">
         ITプロジェクトのご相談、お見積もり、技術顧問のご依頼など、お気軽にお問い合わせください。
       </p>
-      <div className="mt-12">
+      <div className="mt-10 sm:mt-12">
         <ContactForm />
       </div>
     </SubpageShell>
