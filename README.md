@@ -16,10 +16,16 @@
 
 ## 開発
 
+Node.js は [.nvmrc](.nvmrc) の `22.23.4`、pnpm は `package.json` の `10.12.1` を使用します。Node.js 22.23.4 は eMudhra の侵害中間 CA 鍵を拒否する修正版です（[公式リリース](https://github.com/nodejs/node/releases/tag/v22.23.4)）。
+
 ```bash
-pnpm install
-pnpm dev        # http://localhost:3000
+nvm install
+nvm use
+corepack pnpm install --frozen-lockfile
+corepack pnpm dev        # http://localhost:3000
 ```
+
+`engines.node` と `.npmrc` で未対応の Node による依存導入を拒否し、開発・ビルド・プレビューの開始時にも実バージョンを確認します。22 系列の後続修正版は許可しますが、ローカルと GitHub Actions の既定値は `.nvmrc` に固定します。
 
 ### アニメーションと配慮
 
@@ -30,8 +36,8 @@ pnpm dev        # http://localhost:3000
 ## ビルドとプレビュー
 
 ```bash
-pnpm build      # 静的ファイルを out/ に生成
-pnpm preview    # http://localhost:3000/homepage/ で out/ を配信
+corepack pnpm build      # 静的ファイルを out/ に生成
+corepack pnpm preview    # http://localhost:3000/homepage/ で out/ を配信
 ```
 
 `pnpm preview` は GitHub Pages と同じ `/homepage` ベースパスを再現する確認用サーバ（[scripts/preview-server.js](scripts/preview-server.js)）を起動します。
@@ -57,6 +63,14 @@ scripts/        プレビュー用サーバ
 ## デプロイ
 
 `main` ブランチへ push すると GitHub Actions（[.github/workflows/pages.yaml](.github/workflows/pages.yaml)）がビルドし、GitHub Pages へ自動デプロイします。
+
+Pull Request では同じ Node 固定とビルド検証だけを実行します。静的配信先のサーバ証明書を入れ替える対応は不要です。Node の CA 修正は、依存導入や `next/font/google` の取得を含むビルド中の HTTPS 通信に関係します。ブラウザからの FormSubmit 通信はブラウザ・OS 側の信頼ストアに従います。
+
+### Vercel でビルドする場合
+
+このリポジトリの公開先は GitHub Pages です。Vercel で利用する場合、`engines.node: ^22.23.4` で 22 系列を選びますが、Vercel の minor / patch 更新はサービス側で管理されます（[公式仕様](https://vercel.com/docs/functions/runtimes/node-js/node-js-versions)）。Install Command は `pnpm install --frozen-lockfile`、Build Command は `pnpm build` を使用し、Build Logs の `Node.js 22.23.4: eMudhra minimum version check passed.` または後続の 22 系列の出力を確認してください。未修正版の環境ではチェックが失敗します。
+
+公開 URL の正常応答だけでは、ビルドに用いた Node の修正状態は確認できません。Vercel のビルドログへアクセスできない場合は、実行バージョンの確認が別途必要です。
 
 ## SEO / LLMO
 

@@ -3,10 +3,15 @@
   "version": "0.1.0",
   "packageManager": "pnpm@10.12.1",
   "private": true,
+  "engines": {
+    "node": "^22.23.4"
+  },
   "scripts": {
-    "dev": "next dev",
-    "build": "next build",
-    "preview": "node scripts/preview-server.js"
+    "check:node": "node scripts/check-node.mjs",
+    "preinstall": "node scripts/check-node.mjs",
+    "dev": "node scripts/check-node.mjs && next dev",
+    "build": "node scripts/check-node.mjs && next build",
+    "preview": "node scripts/check-node.mjs && node scripts/preview-server.js"
   },
   "dependencies": {
     "clsx": "^2.1.1",
